@@ -1,0 +1,1245 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizMaster | Quiz History</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --qm-primary: #2563eb;
+      --qm-dark: #0f172a;
+      --qm-accent: #14b8a6;
+      --qm-bg: #f8fafc;
+      --qm-border: #e2e8f0;
+      --qm-muted: #64748b;
+      --qm-success: #059669;
+      --qm-danger: #dc2626;
+      --qm-amber: #d97706;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      width: 100%;
+      min-height: calc(100 * min(var(--vh, 1vh), 1vh));
+      margin: 0;
+      color: var(--qm-dark);
+      background: var(--qm-bg);
+      font-family: "DM Sans", sans-serif;
+    }
+
+    button, input, select { font-family: inherit; }
+
+    .qm-app {
+      display: flex;
+      width: 100%;
+      min-height: calc(100 * min(var(--vh, 1vh), 1vh));
+      background:
+        radial-gradient(circle at 2% 0%, rgba(37, 99, 235, 0.10), transparent 28rem),
+        radial-gradient(circle at 96% 18%, rgba(20, 184, 166, 0.09), transparent 25rem),
+        var(--qm-bg);
+    }
+
+    .qm-sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      width: 244px;
+      padding: 25px 16px 18px;
+      border-right: 1px solid rgba(226, 232, 240, 0.9);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(16px);
+    }
+
+    .qm-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 11px;
+      color: var(--qm-dark);
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      color: #fff;
+      background: linear-gradient(135deg, #2563eb, #14b8a6);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, .28);
+    }
+
+    .qm-side-nav {
+      display: grid;
+      gap: 5px;
+      margin-top: 39px;
+    }
+
+    .qm-side-link {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-height: 45px;
+      padding: 10px 13px;
+      border-radius: 10px;
+      color: var(--qm-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+
+    .qm-side-link i { font-size: 1.1rem; }
+
+    .qm-side-link:hover {
+      color: var(--qm-primary);
+      background: #eff6ff;
+      transform: translateX(2px);
+    }
+
+    .qm-side-link.active {
+      color: var(--qm-primary);
+      background: #eff6ff;
+      box-shadow: inset 3px 0 0 var(--qm-primary);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 18px;
+      border-top: 1px solid var(--qm-border);
+    }
+
+    .qm-side-link.logout:hover {
+      color: var(--qm-danger);
+      background: #fef2f2;
+    }
+
+    .qm-content-shell {
+      width: calc(100% - 244px);
+      min-height: calc(100 * min(var(--vh, 1vh), 1vh));
+      margin-left: 244px;
+    }
+
+    .qm-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      min-height: 76px;
+      border-bottom: 1px solid var(--qm-border);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+    }
+
+    .qm-topbar-inner {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 1360px;
+      min-height: 76px;
+      margin: 0 auto;
+      padding: 13px 34px;
+    }
+
+    .topbar-title {
+      margin: 0;
+      color: var(--qm-dark);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+
+    .topbar-search {
+      position: relative;
+      width: min(100%, 320px);
+      margin-left: auto;
+    }
+
+    .topbar-search i {
+      position: absolute;
+      top: 50%;
+      left: 13px;
+      color: #94a3b8;
+      transform: translateY(-50%);
+    }
+
+    .topbar-search input {
+      width: 100%;
+      height: 40px;
+      padding: 0 13px 0 38px;
+      border: 1px solid var(--qm-border);
+      border-radius: 9px;
+      outline: 0;
+      color: var(--qm-dark);
+      background: #fff;
+      font-size: 0.84rem;
+      transition: border 160ms ease, box-shadow 160ms ease;
+    }
+
+    .topbar-search input:focus,
+    .filter-control:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .icon-button {
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--qm-border);
+      border-radius: 10px;
+      color: #475569;
+      background: #fff;
+      transition: transform 160ms ease, color 160ms ease, border 160ms ease;
+    }
+
+    .icon-button:hover {
+      border-color: #93c5fd;
+      color: var(--qm-primary);
+      transform: translateY(-1px);
+    }
+
+    .notification-wrap { position: relative; }
+
+    .notification-dot {
+      position: absolute;
+      top: 8px;
+      right: 9px;
+      width: 7px;
+      height: 7px;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      background: var(--qm-danger);
+    }
+
+    .notification-panel {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      display: none;
+      width: 270px;
+      padding: 14px;
+      border: 1px solid var(--qm-border);
+      border-radius: 13px;
+      color: #475569;
+      background: #fff;
+      box-shadow: 0 18px 35px rgba(15, 23, 42, 0.13);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .notification-panel.is-open { display: block; animation: fade-up 180ms ease; }
+
+    .profile-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 15px;
+      border-left: 1px solid var(--qm-border);
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      color: #1d4ed8;
+      background: #dbeafe;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .profile-copy { line-height: 1.12; }
+    .profile-copy strong { display: block; font-size: 0.82rem; }
+    .profile-copy span { color: var(--qm-muted); font-size: 0.72rem; }
+
+    .qm-main {
+      width: 100%;
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 39px 34px 52px;
+    }
+
+    .page-intro {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 27px;
+    }
+
+    .page-kicker {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 9px;
+      color: var(--qm-primary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .page-kicker::before {
+      width: 23px;
+      height: 2px;
+      border-radius: 4px;
+      content: "";
+      background: var(--qm-primary);
+    }
+
+    .page-intro h1 {
+      margin: 0;
+      color: var(--qm-dark);
+      font-size: clamp(1.85rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.055em;
+    }
+
+    .page-intro p {
+      max-width: 580px;
+      margin: 9px 0 0;
+      color: var(--qm-muted);
+      line-height: 1.55;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 17px;
+      margin-bottom: 23px;
+    }
+
+    .qm-card {
+      border: 1px solid var(--qm-border);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 11px 28px rgba(15, 23, 42, 0.045);
+    }
+
+    .summary-card {
+      min-height: 140px;
+      padding: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .summary-card::after {
+      position: absolute;
+      right: -20px;
+      bottom: -33px;
+      width: 97px;
+      height: 97px;
+      border: 19px solid;
+      border-radius: 50%;
+      content: "";
+      opacity: 0.44;
+    }
+
+    .summary-card:nth-child(1)::after { border-color: #bfdbfe; }
+    .summary-card:nth-child(2)::after { border-color: #99f6e4; }
+    .summary-card:nth-child(3)::after { border-color: #fde68a; }
+    .summary-card:nth-child(4)::after { border-color: #fecaca; }
+
+    .summary-icon {
+      display: grid;
+      place-items: center;
+      width: 35px;
+      height: 35px;
+      margin-bottom: 16px;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    .summary-card:nth-child(1) .summary-icon { color: #1d4ed8; background: #dbeafe; }
+    .summary-card:nth-child(2) .summary-icon { color: #0f766e; background: #ccfbf1; }
+    .summary-card:nth-child(3) .summary-icon { color: #b45309; background: #fef3c7; }
+    .summary-card:nth-child(4) .summary-icon { color: #b91c1c; background: #fee2e2; }
+
+    .summary-value {
+      margin: 0;
+      color: var(--qm-dark);
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: -0.05em;
+    }
+
+    .summary-label {
+      margin: 3px 0 0;
+      color: var(--qm-muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .filter-panel {
+      padding: 20px;
+      margin-bottom: 22px;
+    }
+
+    .filter-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .filter-panel-head h2 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: minmax(210px, 1.6fr) repeat(3, minmax(145px, 1fr)) auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .filter-field label {
+      display: block;
+      margin-bottom: 7px;
+      color: #475569;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .filter-control {
+      width: 100%;
+      height: 42px;
+      padding: 0 12px;
+      border: 1px solid var(--qm-border);
+      border-radius: 9px;
+      outline: 0;
+      color: #334155;
+      background: #fff;
+      font-size: 0.84rem;
+    }
+
+    .filter-search { position: relative; }
+    .filter-search i {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      color: #94a3b8;
+      transform: translateY(-50%);
+    }
+
+    .filter-search input { padding-left: 36px; }
+
+    .clear-button {
+      height: 42px;
+      padding: 0 15px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      color: #475569;
+      background: #fff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: background 160ms ease, color 160ms ease;
+    }
+
+    .clear-button:hover { color: var(--qm-primary); background: #eff6ff; }
+
+    .history-section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 15px;
+      margin: 0 0 14px;
+    }
+
+    .history-section-head h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .history-section-head p {
+      margin: 5px 0 0;
+      color: var(--qm-muted);
+      font-size: 0.85rem;
+    }
+
+    .result-count {
+      color: var(--qm-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .history-card { overflow: hidden; }
+
+    .history-table {
+      width: 100%;
+      min-width: 1010px;
+      margin: 0;
+      border-collapse: collapse;
+    }
+
+    .history-table th {
+      padding: 14px 17px;
+      border-bottom: 1px solid var(--qm-border);
+      color: var(--qm-muted);
+      background: #f8fafc;
+      font-size: 0.69rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-align: left;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .history-table td {
+      padding: 15px 17px;
+      border-bottom: 1px solid #edf2f7;
+      color: #475569;
+      font-size: 0.84rem;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .history-table tbody tr { transition: background 150ms ease; }
+    .history-table tbody tr:hover { background: #fafcff; }
+    .history-table tbody tr:last-child td { border-bottom: 0; }
+
+    .quiz-cell {
+      color: var(--qm-dark) !important;
+      font-weight: 700;
+      white-space: normal !important;
+    }
+
+    .category-tag,
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .category-tag {
+      padding: 5px 9px;
+      color: #1d4ed8;
+      background: #eff6ff;
+    }
+
+    .score-cell { color: var(--qm-dark) !important; font-weight: 700; }
+    .correct-cell { color: var(--qm-success) !important; font-weight: 700; }
+    .wrong-cell { color: var(--qm-danger) !important; font-weight: 700; }
+
+    .status-badge { padding: 5px 9px; }
+    .status-pass { color: #047857; background: #d1fae5; }
+    .status-review { color: #b45309; background: #fef3c7; }
+
+    .view-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      color: var(--qm-primary);
+      background: #eff6ff;
+      font-size: 0.76rem;
+      font-weight: 700;
+      transition: background 160ms ease, transform 160ms ease;
+    }
+
+    .view-button:hover { background: #dbeafe; transform: translateY(-1px); }
+
+    .empty-state {
+      display: none;
+      padding: 42px 20px;
+      color: var(--qm-muted);
+      text-align: center;
+    }
+
+    .empty-state.is-visible { display: block; }
+    .empty-state i { display: block; margin-bottom: 10px; color: #94a3b8; font-size: 2rem; }
+    .empty-state p { margin: 0; font-size: 0.9rem; }
+
+    .qm-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.47);
+    }
+
+    .qm-modal-backdrop.is-open { display: flex; animation: fade-in 160ms ease; }
+
+    .result-modal {
+      width: min(100%, 500px);
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 25px 65px rgba(15, 23, 42, 0.28);
+      animation: modal-up 180ms ease;
+    }
+
+    .modal-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 23px 24px 20px;
+      color: #fff;
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    }
+
+    .modal-top h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .modal-top p { margin: 5px 0 0; color: #bfdbfe; font-size: 0.82rem; }
+
+    .modal-close {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 8px;
+      color: #fff;
+      background: rgba(255,255,255,0.10);
+    }
+
+    .modal-content-area { padding: 23px 24px; }
+
+    .modal-score {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding-bottom: 19px;
+      border-bottom: 1px solid var(--qm-border);
+    }
+
+    .modal-score-ring {
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background: conic-gradient(var(--qm-primary) 0deg 300deg, #e2e8f0 300deg 360deg);
+    }
+
+    .modal-score-ring::before {
+      position: absolute;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      content: "";
+      background: #fff;
+    }
+
+    .modal-score-ring strong { z-index: 1; font-size: 1.05rem; letter-spacing: -0.05em; }
+    .modal-score h3 { margin: 0; font-size: 1.05rem; font-weight: 700; }
+    .modal-score p { margin: 4px 0 0; color: var(--qm-muted); font-size: 0.82rem; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .detail-item {
+      padding: 12px;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    .detail-item span { display: block; color: var(--qm-muted); font-size: 0.71rem; font-weight: 600; }
+    .detail-item strong { display: block; margin-top: 4px; color: var(--qm-dark); font-size: 0.9rem; }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 24px 23px;
+    }
+
+    .modal-close-action {
+      min-height: 39px;
+      padding: 0 15px;
+      border: 0;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--qm-primary);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .dashboard-shell {
+      width: 100%;
+      min-height: calc(100 * min(var(--vh, 1vh), 1vh));
+      background:
+        radial-gradient(circle at 88% 4%, rgba(20, 184, 166, .08), transparent 23rem),
+        linear-gradient(90deg, rgba(37, 99, 235, .025) 1px, transparent 1px),
+        linear-gradient(rgba(37, 99, 235, .025) 1px, transparent 1px),
+        #f8fafc;
+      background-size: auto, 28px 28px, 28px 28px, auto;
+    }
+
+    .sidebar {
+      width: 264px;
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 40;
+      padding: 22px 16px;
+      background: #0f172a;
+      color: #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      transition: transform .28s ease;
+      font-family: "Work Sans", sans-serif;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-radius: 11px;
+      padding: 12px 13px;
+      margin: 3px 0;
+      color: #94a3b8;
+      transition: background .2s, color .2s, transform .2s;
+    }
+
+    .nav-link:hover { background: rgba(255,255,255,.07); color: #f8fafc; transform: translateX(2px); }
+    .nav-link.active { background: #2563eb; color: #fff; box-shadow: 0 8px 16px rgba(37, 99, 235, .22); }
+    .main-area { margin-left: 264px; min-width: 0; }
+    .sidebar-overlay { display: none; }
+
+    @media (max-width: 1023px) {
+      .sidebar { transform: translateX(-105%); box-shadow: 18px 0 40px rgba(15,23,42,.25); }
+      .sidebar.is-open { transform: translateX(0); }
+      .main-area { margin-left: 0; }
+      .sidebar-overlay.is-open { display: block; position: fixed; inset: 0; z-index: 35; background: rgba(15,23,42,.42); }
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid rgba(20, 184, 166, 0.34);
+      outline-offset: 3px;
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modal-up {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (max-width: 980px) {
+      .qm-sidebar { width: 74px; padding: 21px 10px 16px; }
+      .qm-brand { justify-content: center; padding: 0; }
+      .qm-brand > span:last-child,
+      .qm-side-link span { display: none; }
+      .qm-side-link { justify-content: center; padding: 10px; }
+      .qm-content-shell { width: calc(100% - 74px); margin-left: 74px; }
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+      .filter-grid { grid-template-columns: repeat(2, 1fr); }
+      .clear-button { width: fit-content; }
+    }
+
+    @media (max-width: 680px) {
+      .qm-content-shell { width: 100%; margin-left: 0; }
+      .qm-sidebar {
+        position: fixed;
+        inset: auto 0 0 0;
+        flex-direction: row;
+        width: 100%;
+        height: 64px;
+        padding: 7px 9px;
+        border-top: 1px solid var(--qm-border);
+        border-right: 0;
+      }
+
+      .qm-brand, .sidebar-footer { display: none; }
+      .qm-side-nav {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        margin: 0;
+      }
+
+      .qm-side-link { min-height: 48px; padding: 9px 10px; }
+      .qm-side-link:nth-child(5),
+      .qm-side-link:nth-child(6),
+      .sidebar-footer { display: none; }
+
+      .qm-topbar-inner { padding: 12px 16px; gap: 10px; }
+      .topbar-search { display: none; }
+      .profile-copy { display: none; }
+      .profile-chip { padding-left: 9px; }
+      .qm-main { padding: 27px 16px 85px; }
+      .page-intro { align-items: flex-start; flex-direction: column; margin-bottom: 22px; }
+      .summary-grid { gap: 11px; }
+      .summary-card { min-height: 125px; padding: 16px; }
+      .filter-panel { padding: 16px; }
+      .filter-grid { grid-template-columns: 1fr; }
+      .clear-button { width: 100%; }
+      .history-section-head { align-items: flex-start; flex-direction: column; }
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js" type="text/javascript"></script>
+  <script src="/_sdk/efe904fe8a212716.data_sdk.js" type="text/javascript" integrity="sha512-oiO0pmn5llS1uDeB2l690YywxqOe/a0U1kzY6RGaLZXtyh9YjTk1CUoK/bJUugc1QbUaJMJ3IE1MtpNY5NBZCw=="></script>
+  <script src="/_sdk/6125e8aa3c264a2d.resizing_sdk.js" type="text/javascript" integrity="sha512-+j9iK2FF/yFSTU389rFqKj3v0s1ELh1r0aj3mqpsVRZujaeWi0WgN7jmTcWLcBq91dz3NCEyXqMtHbwpOxhDYg=="></script>
+ </head>
+ <body data-template-id="__page-root">
+  <div class="dashboard-shell">
+   <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+   <aside id="sidebar" class="sidebar" aria-label="Primary navigation">
+    <div class="flex items-center justify-between px-2 mb-9">
+     <div class="flex items-center gap-3"><div class="brand-mark"><i data-lucide="graduation-cap" width="21" height="21"></i></div><span class="text-white font-bold tracking-tight">QuizMaster</span></div>
+     <button id="closeSidebar" type="button" class="lg:hidden text-slate-400 hover:text-white" aria-label="Close navigation"><i data-lucide="x" width="21" height="21"></i></button>
+    </div>
+    <nav class="flex-1" aria-label="QuizMaster navigation">
+     <a href="index.html" class="nav-link"><i data-lucide="layout-dashboard" width="19" height="19"></i><span>Dashboard</span></a>
+     <a href="quizzes.html" class="nav-link"><i data-lucide="book-open" width="19" height="19"></i><span>Quizzes</span></a>
+     <a href="result.html" class="nav-link"><i data-lucide="chart-no-axes-combined" width="19" height="19"></i><span>Results</span></a>
+     <a href="history.html" class="nav-link active" aria-current="page"><i data-lucide="history" width="19" height="19"></i><span>History</span></a>
+     <div class="mt-7 mb-3 px-3 text-[11px] font-bold uppercase tracking-[.16em] text-slate-500">Account</div>
+     <a href="#profile" class="nav-link"><i data-lucide="circle-user-round" width="19" height="19"></i><span>Profile</span></a>
+     <a href="#settings" class="nav-link"><i data-lucide="settings-2" width="19" height="19"></i><span>Settings</span></a>
+    </nav>
+    <button type="button" class="nav-link w-full text-left mt-3"><i data-lucide="log-out" width="19" height="19"></i><span>Log out</span></button>
+   </aside>
+   <div class="main-area">
+    <header class="qm-topbar">
+     <div class="qm-topbar-inner">
+      <button id="openSidebar" type="button" class="lg:hidden w-10 h-10 rounded-xl bg-white border border-slate-200 grid place-items-center" aria-label="Open navigation"><i data-lucide="menu" width="20" height="20"></i></button>
+      <h2 data-template-id="topbar-title" class="topbar-title canva-text">Quiz History</h2>
+      <div class="topbar-search"><i class="bi bi-search" aria-hidden="true"></i> <label class="visually-hidden" for="top-search">Search quiz history</label> <input id="top-search" type="search" placeholder="Search anything">
+      </div>
+      <div class="notification-wrap"><button id="notification-button" class="icon-button" type="button" aria-label="Open notifications" aria-expanded="false" aria-controls="notification-panel"> <i class="bi bi-bell"></i> <span class="notification-dot" aria-hidden="true"></span> </button>
+       <div id="notification-panel" class="notification-panel" role="status">
+        Check your history to review the quizzes you have completed.
+       </div>
+      </div>
+      <div class="profile-chip" aria-label="Current user"><span class="avatar" aria-hidden="true">AM</span>
+       <div class="profile-copy"><strong data-template-id="profile-name" class="canva-text"></strong> <span data-template-id="profile-role" class="canva-text"></span>
+       </div>
+      </div>
+     </div>
+    </header>
+    <main id="history" class="qm-main">
+     <section class="page-intro" aria-labelledby="page-heading">
+      <div>
+       <div data-template-id="history-kicker" class="page-kicker canva-text"></div>
+       <h1 data-template-id="page-heading" class="canva-text"></h1>
+       <p data-template-id="page-subtitle" class="canva-text"></p>
+      </div>
+     </section>
+     <section class="summary-grid" aria-label="Quiz performance summary">
+      <article data-template-id="total-attempts-card" class="qm-card summary-card canva-card">
+       <div class="summary-icon" aria-hidden="true">
+        <i class="bi bi-collection"></i>
+       </div>
+       <p id="total-attempts" class="summary-value">0</p>
+       <p data-template-id="total-attempts-label" class="summary-label canva-text"></p>
+      </article>
+      <article data-template-id="average-score-card" class="qm-card summary-card canva-card">
+       <div class="summary-icon" aria-hidden="true">
+        <i class="bi bi-graph-up-arrow"></i>
+       </div>
+       <p id="average-score" class="summary-value">0%</p>
+       <p data-template-id="average-score-label" class="summary-label canva-text"></p>
+      </article>
+      <article data-template-id="highest-score-card" class="qm-card summary-card canva-card">
+       <div class="summary-icon" aria-hidden="true">
+        <i class="bi bi-trophy"></i>
+       </div>
+       <p id="highest-score" class="summary-value">0%</p>
+       <p data-template-id="highest-score-label" class="summary-label canva-text"></p>
+      </article>
+      <article data-template-id="lowest-score-card" class="qm-card summary-card canva-card">
+       <div class="summary-icon" aria-hidden="true">
+        <i class="bi bi-activity"></i>
+       </div>
+       <p id="lowest-score" class="summary-value">0%</p>
+       <p data-template-id="lowest-score-label" class="summary-label canva-text"></p>
+      </article>
+     </section>
+     <section data-template-id="filter-panel" class="qm-card filter-panel canva-panel" aria-labelledby="filter-heading">
+      <div class="filter-panel-head">
+       <h2 data-template-id="filter-heading" class="canva-text"></h2>
+      </div>
+      <form id="history-filters" class="filter-grid" novalidate>
+       <div class="filter-field"><label data-template-id="search-quiz-label" class="canva-text" for="quiz-search"></label>
+        <div class="filter-search"><i class="bi bi-search" aria-hidden="true"></i> <input id="quiz-search" class="filter-control" type="search" placeholder="Find a quiz">
+        </div>
+       </div>
+       <div class="filter-field"><label data-template-id="category-label" class="canva-text" for="category-filter"></label> <select id="category-filter" class="filter-control"> <option value="all">All categories</option> <option value="Programming">Programming</option> <option value="Web Development">Web Development</option> <option value="General Knowledge">General Knowledge</option> <option value="Computer Science">Computer Science</option> </select>
+       </div>
+       <div class="filter-field"><label data-template-id="score-label" class="canva-text" for="score-filter"></label> <select id="score-filter" class="filter-control"> <option value="all">Any score</option> <option value="90">90% and above</option> <option value="75">75% to 89%</option> <option value="0">Below 75%</option> </select>
+       </div>
+       <div class="filter-field"><label data-template-id="date-label" class="canva-text" for="date-filter"></label> <select id="date-filter" class="filter-control"> <option value="all">All time</option> <option value="week">This week</option> <option value="month">This month</option> <option value="older">Earlier</option> </select>
+       </div><button id="clear-filters" data-template-id="clear-filters" class="clear-button canva-button" type="button"></button>
+      </form>
+     </section>
+     <section aria-labelledby="attempts-heading">
+      <div class="history-section-head">
+       <div>
+        <h2 data-template-id="attempts-heading" class="canva-text"></h2>
+        <p data-template-id="attempts-subtitle" class="canva-text"></p>
+       </div><span id="result-count" class="result-count" aria-live="polite"></span>
+      </div>
+      <div data-template-id="history-table-card" class="qm-card history-card canva-card">
+       <div class="table-responsive">
+        <table class="history-table">
+         <thead>
+          <tr>
+           <th data-template-id="quiz-column" class="canva-text"></th>
+           <th data-template-id="category-column" class="canva-text"></th>
+           <th data-template-id="date-column" class="canva-text"></th>
+           <th data-template-id="questions-column" class="canva-text"></th>
+           <th data-template-id="score-column" class="canva-text"></th>
+           <th data-template-id="correct-column" class="canva-text"></th>
+           <th data-template-id="wrong-column" class="canva-text"></th>
+           <th data-template-id="status-column" class="canva-text"></th>
+           <th data-template-id="action-column" class="canva-text"></th>
+          </tr>
+         </thead>
+         <tbody id="history-table-body"></tbody>
+        </table>
+       </div>
+       <div id="empty-state" class="empty-state"><i class="bi bi-search" aria-hidden="true"></i>
+        <p data-template-id="empty-state-text" class="canva-text"></p>
+       </div>
+      </div>
+     </section>
+    </main>
+   </div>
+  </div>
+  <template id="history-row-template">
+   <tr>
+    <td class="quiz-cell"></td>
+    <td><span class="category-tag"></span></td>
+    <td class="date-cell"></td>
+    <td class="questions-cell"></td>
+    <td class="score-cell"></td>
+    <td class="correct-cell"></td>
+    <td class="wrong-cell"></td>
+    <td><span class="status-badge"></span></td>
+    <td><button data-template-id="view-result-button" class="view-button canva-button" type="button"> <i class="bi bi-eye" aria-hidden="true"></i> </button></td>
+   </tr>
+  </template>
+  <div id="result-modal-backdrop" class="qm-modal-backdrop" role="presentation">
+   <section class="result-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div data-template-id="result-modal-header" class="modal-top canva-banner">
+     <div>
+      <h2 data-template-id="modal-title" class="canva-text"></h2>
+      <p id="modal-quiz-name"></p>
+     </div><button id="modal-close-icon" class="modal-close" type="button" aria-label="Close result preview"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-content-area">
+     <div class="modal-score">
+      <div id="modal-score-ring" class="modal-score-ring">
+       <strong id="modal-score-value">0%</strong>
+      </div>
+      <div>
+       <h3 id="modal-score-title">Quiz attempt</h3>
+       <p id="modal-score-summary">0 correct answers</p>
+      </div>
+     </div>
+     <div class="detail-grid">
+      <div class="detail-item">
+       <span>Category</span><strong id="modal-category"></strong>
+      </div>
+      <div class="detail-item">
+       <span>Date completed</span><strong id="modal-date"></strong>
+      </div>
+      <div class="detail-item">
+       <span>Questions</span><strong id="modal-questions"></strong>
+      </div>
+      <div class="detail-item">
+       <span>Status</span><strong id="modal-status"></strong>
+      </div>
+     </div>
+    </div>
+    <div class="modal-footer"><button id="modal-close-action" data-template-id="modal-close-action" class="modal-close-action canva-button" type="button"></button>
+    </div>
+   </section>
+  </div>
+  <script src="/_sdk/6f16dc4ffc0cf3fe.editing_sdk.js" integrity="sha512-XcGkt+MVg9QK/rlrq9umdkP9LzshVjIu+vaITjWOSFti+dqk5aHBHkCCQ/IXnnUyJtw0F+lYzvT7m4EfPrBrjg=="></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const templateContent = {
+        "topbar-title": "Quiz History", "profile-name": "Student", "profile-role": "Learner",
+        "history-kicker": "Your learning activity", "page-heading": "Quiz History", "page-subtitle": "Review your completed quizzes, scores, and progress over time.",
+        "total-attempts-label": "Quizzes completed", "average-score-label": "Average score", "highest-score-label": "Highest score", "lowest-score-label": "Lowest score",
+        "filter-heading": "Find an attempt", "search-quiz-label": "Search quizzes", "category-label": "Topic", "score-label": "Score", "date-label": "Date completed", "clear-filters": "Clear filters",
+        "attempts-heading": "All quiz attempts", "attempts-subtitle": "Your completed quiz attempts appear here, newest first.",
+        "quiz-column": "Quiz", "category-column": "Topic", "date-column": "Date", "questions-column": "Questions", "score-column": "Score", "correct-column": "Correct", "wrong-column": "Wrong", "status-column": "Status", "action-column": "Details",
+        "empty-state-text": "No attempts to show. Complete a quiz or adjust your filters.", "modal-title": "Quiz result", "modal-close-action": "Close", "view-result-button": "View result"
+      };
+      Object.entries(templateContent).forEach(function ([id, text]) {
+        const element = document.querySelector('[data-template-id="' + id + '"]');
+        if (element) element.textContent = text;
+      });
+      if (window.lucide) lucide.createIcons();
+
+      let attempts = [];
+      try {
+        attempts = JSON.parse(localStorage.getItem("quizmaster-history") || "[]");
+      } catch (error) {
+        try { attempts = JSON.parse(sessionStorage.getItem("quizmaster-history") || "[]"); }
+        catch (storageError) { attempts = []; }
+      }
+      if (!Array.isArray(attempts)) attempts = [];
+      if (attempts.length === 0) {
+        try {
+          const previousResult = JSON.parse(localStorage.getItem("quizmaster-result") || sessionStorage.getItem("quizmaster-result") || "null");
+          if (previousResult && previousResult.quizTitle) {
+            const category = previousResult.quizTitle === "General Knowledge" ? "General Knowledge"
+              : previousResult.quizTitle === "Computer Fundamentals" ? "Computer Science"
+                : ["HTML & CSS", "Bootstrap 5", "Web Development Basics"].includes(previousResult.quizTitle) ? "Web Development" : "Programming";
+            attempts.push({
+              id: String(Date.now()) + "-previous", quiz: previousResult.quizTitle, category,
+              date: new Date().toISOString(), questions: Number(previousResult.totalQuestions) || 0,
+              score: Number(previousResult.percent) || 0, correct: Number(previousResult.correctAnswers) || 0,
+              wrong: Number(previousResult.wrongAnswers) || 0,
+              status: Number(previousResult.percent) >= 70 ? "Passed" : "Review"
+            });
+            localStorage.setItem("quizmaster-history", JSON.stringify(attempts));
+          }
+        } catch (error) {
+          /* Older result data can be unavailable when browser storage is disabled. */
+        }
+      }
+
+      const tableBody = document.getElementById("history-table-body");
+      const emptyState = document.getElementById("empty-state");
+      const resultCount = document.getElementById("result-count");
+      const form = document.getElementById("history-filters");
+      const searchInput = document.getElementById("quiz-search");
+      const categoryFilter = document.getElementById("category-filter");
+      const scoreFilter = document.getElementById("score-filter");
+      const dateFilter = document.getElementById("date-filter");
+      const modalBackdrop = document.getElementById("result-modal-backdrop");
+      let lastFocusedButton = null;
+
+      function formatDate(value) {
+        return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(value));
+      }
+
+      function calculateSummary() {
+        const scores = attempts.map(function (attempt) { return Number(attempt.score) || 0; });
+        document.getElementById("total-attempts").textContent = attempts.length;
+        if (!scores.length) {
+          document.getElementById("average-score").textContent = "0%";
+          document.getElementById("highest-score").textContent = "0%";
+          document.getElementById("lowest-score").textContent = "0%";
+          return;
+        }
+        document.getElementById("average-score").textContent = Math.round(scores.reduce(function (sum, score) { return sum + score; }, 0) / scores.length) + "%";
+        document.getElementById("highest-score").textContent = Math.max.apply(null, scores) + "%";
+        document.getElementById("lowest-score").textContent = Math.min.apply(null, scores) + "%";
+      }
+
+      function getFilteredAttempts() {
+        const term = searchInput.value.trim().toLowerCase();
+        const category = categoryFilter.value;
+        const score = scoreFilter.value;
+        const dateRange = dateFilter.value;
+        const today = new Date();
+        today.setHours(12, 0, 0, 0);
+
+        return attempts.filter(function (attempt) {
+          const attemptDate = new Date(attempt.date);
+          attemptDate.setHours(12, 0, 0, 0);
+          const ageDays = Math.floor((today - attemptDate) / 86400000);
+          const searchMatches = !term || attempt.quiz.toLowerCase().includes(term) || attempt.category.toLowerCase().includes(term);
+          const categoryMatches = category === "all" || attempt.category === category;
+          const scoreMatches = score === "all" ||
+            (score === "90" && attempt.score >= 90) ||
+            (score === "75" && attempt.score >= 75 && attempt.score < 90) ||
+            (score === "0" && attempt.score < 75);
+          const dateMatches = dateRange === "all" ||
+            (dateRange === "week" && ageDays <= 7) ||
+            (dateRange === "month" && ageDays <= 31) ||
+            (dateRange === "older" && ageDays > 31);
+
+          return searchMatches && categoryMatches && scoreMatches && dateMatches;
+        });
+      }
+
+      function createRow(attempt) {
+        const fragment = document.getElementById("history-row-template").content.cloneNode(true);
+        const row = fragment.querySelector("tr");
+        row.dataset.attemptId = attempt.id;
+        row.querySelector(".quiz-cell").textContent = attempt.quiz;
+        row.querySelector(".category-tag").textContent = attempt.category;
+        row.querySelector(".date-cell").textContent = formatDate(attempt.date);
+        row.querySelector(".questions-cell").textContent = attempt.questions;
+        row.querySelector(".score-cell").textContent = attempt.score + "%";
+        row.querySelector(".correct-cell").textContent = attempt.correct;
+        row.querySelector(".wrong-cell").textContent = attempt.wrong;
+
+        const badge = row.querySelector(".status-badge");
+        badge.textContent = attempt.status;
+        badge.classList.add(attempt.status === "Passed" ? "status-pass" : "status-review");
+
+        const button = row.querySelector(".view-button");
+        button.dataset.attemptId = attempt.id;
+        button.addEventListener("click", function () {
+          openResult(attempt, button);
+        });
+
+        return fragment;
+      }
+
+      function renderAttempts() {
+        const filtered = getFilteredAttempts();
+        tableBody.replaceChildren();
+
+        filtered.forEach(function (attempt) {
+          tableBody.appendChild(createRow(attempt));
+        });
+
+        resultCount.textContent = filtered.length + " of " + attempts.length + " attempts";
+        emptyState.classList.toggle("is-visible", filtered.length === 0);
+      }
+
+      function openResult(attempt, trigger) {
+        lastFocusedButton = trigger;
+        document.getElementById("modal-quiz-name").textContent = attempt.quiz;
+        document.getElementById("modal-score-value").textContent = attempt.score + "%";
+        document.getElementById("modal-score-title").textContent = attempt.status === "Passed" ? "Great work — passed!" : "Review and try again";
+        document.getElementById("modal-score-summary").textContent = attempt.correct + " of " + attempt.questions + " questions answered correctly";
+        document.getElementById("modal-category").textContent = attempt.category;
+        document.getElementById("modal-date").textContent = formatDate(attempt.date);
+        document.getElementById("modal-questions").textContent = attempt.questions + " questions";
+        document.getElementById("modal-status").textContent = attempt.status;
+
+        const degrees = attempt.score * 3.6;
+        document.getElementById("modal-score-ring").style.background = "conic-gradient(#2563eb 0deg " + degrees + "deg, #e2e8f0 " + degrees + "deg 360deg)";
+        modalBackdrop.classList.add("is-open");
+        document.getElementById("modal-close-icon").focus();
+      }
+
+      function closeResult() {
+        modalBackdrop.classList.remove("is-open");
+        if (lastFocusedButton) lastFocusedButton.focus();
+      }
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+      });
+
+      [searchInput, categoryFilter, scoreFilter, dateFilter].forEach(function (control) {
+        control.addEventListener("input", renderAttempts);
+        control.addEventListener("change", renderAttempts);
+      });
+
+      document.getElementById("top-search").addEventListener("input", function (event) {
+        searchInput.value = event.target.value;
+        renderAttempts();
+      });
+
+      document.getElementById("clear-filters").addEventListener("click", function () {
+        form.reset();
+        document.getElementById("top-search").value = "";
+        renderAttempts();
+      });
+
+      document.getElementById("notification-button").addEventListener("click", function () {
+        const panel = document.getElementById("notification-panel");
+        const isOpen = panel.classList.toggle("is-open");
+        this.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebarOverlay");
+      document.getElementById("openSidebar").addEventListener("click", function () {
+        sidebar.classList.add("is-open");
+        overlay.classList.add("is-open");
+      });
+      function closeSidebar() {
+        sidebar.classList.remove("is-open");
+        overlay.classList.remove("is-open");
+      }
+      document.getElementById("closeSidebar").addEventListener("click", closeSidebar);
+      overlay.addEventListener("click", closeSidebar);
+      document.addEventListener("click", function (event) {
+        if (!event.target.closest("#notification-button") && !event.target.closest("#notification-panel")) {
+          document.getElementById("notification-panel").classList.remove("is-open");
+          document.getElementById("notification-button").setAttribute("aria-expanded", "false");
+        }
+      });
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeSidebar();
+          document.getElementById("notification-panel").classList.remove("is-open");
+          document.getElementById("notification-button").setAttribute("aria-expanded", "false");
+        }
+      });
+
+      document.getElementById("modal-close-icon").addEventListener("click", closeResult);
+      document.getElementById("modal-close-action").addEventListener("click", closeResult);
+
+      modalBackdrop.addEventListener("click", function (event) {
+        if (event.target === modalBackdrop) closeResult();
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && modalBackdrop.classList.contains("is-open")) closeResult();
+      });
+
+      window.QuizMasterHistory = {
+        render: function (records) {
+          if (!Array.isArray(records)) return;
+          attempts.splice.apply(attempts, [0, attempts.length].concat(records));
+          calculateSummary();
+          renderAttempts();
+        }
+      };
+
+      calculateSummary();
+      renderAttempts();
+    });
+  </script>
+ </body>
+</html>

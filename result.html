@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizMaster | Quiz Results</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      --qm-primary: #2563eb;
+      --qm-dark: #0f172a;
+      --qm-accent: #14b8a6;
+      --qm-bg: #f8fafc;
+      --qm-border: #e2e8f0;
+      --qm-muted: #64748b;
+      --qm-success: #059669;
+      --qm-danger: #dc2626;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      width: 100%;
+      min-height: calc(100 * min(var(--vh, 1vh), 1vh));
+      margin: 0;
+      color: var(--qm-dark);
+      font-family: "DM Sans", sans-serif;
+    }
+
+    button { font-family: inherit; }
+
+    .qm-app {
+      width: 100%;
+      min-height: calc(100 * min(var(--vh, 1vh), 1vh));
+      background:
+        radial-gradient(circle at 3% 0%, rgba(37, 99, 235, 0.10), transparent 28rem),
+        radial-gradient(circle at 98% 32%, rgba(20, 184, 166, 0.10), transparent 25rem),
+        var(--qm-bg);
+    }
+
+    .qm-header {
+      border-bottom: 1px solid var(--qm-border);
+      backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.94);
+    }
+
+    .qm-header-inner {
+      width: 100%;
+      max-width: 1220px;
+      min-height: 76px;
+      margin: 0 auto;
+      padding: 13px 28px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .qm-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--qm-dark);
+      font-size: 1.18rem;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      color: #fff;
+      background: #2563eb;
+      box-shadow: 0 9px 19px rgba(37, 99, 235, 0.24);
+    }
+
+    .qm-nav {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      margin-left: auto;
+    }
+
+    .qm-nav a {
+      color: #64748b;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 180ms ease;
+    }
+
+    .qm-nav a:hover, .qm-nav a.active { color: #2563eb; }
+
+    .profile-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 12px;
+      border-left: 1px solid var(--qm-border);
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      color: #1d4ed8;
+      background: #dbeafe;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .profile-copy { line-height: 1.1; }
+    .profile-copy strong { display: block; font-size: 0.83rem; }
+    .profile-copy span { color: var(--qm-muted); font-size: 0.72rem; }
+
+    .qm-main {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 42px 28px 58px;
+    }
+
+    .completion-banner {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 190px;
+      padding: 32px;
+      border: 1px solid #bfdbfe;
+      border-radius: 22px;
+      text-align: center;
+      background: linear-gradient(125deg, #eff6ff, #f0fdfa);
+      box-shadow: 0 16px 38px rgba(15, 23, 42, 0.06);
+    }
+
+    .completion-banner::before,
+    .completion-banner::after {
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      content: "";
+      opacity: 0.55;
+    }
+
+    .completion-banner::before {
+      top: -88px;
+      left: -58px;
+      background: #bfdbfe;
+    }
+
+    .completion-banner::after {
+      right: -50px;
+      bottom: -100px;
+      background: #99f6e4;
+    }
+
+    .completion-content { position: relative; z-index: 1; }
+    .success-icon {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 11px;
+      border-radius: 50%;
+      color: #fff;
+      background: #14b8a6;
+      box-shadow: 0 9px 20px rgba(20, 184, 166, 0.28);
+    }
+
+    .success-icon svg { width: 25px; height: 25px; }
+
+    .completion-title {
+      margin: 0;
+      color: var(--qm-dark);
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.045em;
+    }
+
+    .completion-subtitle {
+      margin: 7px 0 0;
+      color: #475569;
+      font-size: 1rem;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: 24px;
+      margin-top: 25px;
+    }
+
+    .qm-card {
+      border: 1px solid var(--qm-border);
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.055);
+    }
+
+    .score-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(23px, 5vw, 48px);
+      min-height: 238px;
+      padding: 30px;
+    }
+
+    .score-ring {
+      position: relative;
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 153px;
+      height: 153px;
+      border-radius: 50%;
+      background: conic-gradient(#2563eb 0deg 306deg, #e2e8f0 306deg 360deg);
+    }
+
+    .score-ring::before {
+      width: 125px;
+      height: 125px;
+      border-radius: 50%;
+      content: "";
+      background: #fff;
+    }
+
+    .score-value {
+      position: absolute;
+      color: #0f172a;
+      font-size: 2.35rem;
+      font-weight: 700;
+      letter-spacing: -0.065em;
+    }
+
+    .score-label { color: var(--qm-muted); font-size: 0.88rem; font-weight: 600; }
+    .score-copy h2 { margin: 7px 0 5px; color: var(--qm-dark); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.03em; }
+    .score-copy p { max-width: 245px; margin: 0; color: var(--qm-muted); font-size: 0.91rem; line-height: 1.55; }
+
+    .performance-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 31px;
+      color: #fff;
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .performance-card::after {
+      position: absolute;
+      right: -55px;
+      bottom: -72px;
+      width: 188px;
+      height: 188px;
+      border: 28px solid rgba(20, 184, 166, 0.34);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .performance-card > * { position: relative; z-index: 1; }
+
+    .performance-eyebrow {
+      margin: 0 0 11px;
+      color: #99f6e4;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .performance-heading { margin: 0; font-size: 1.42rem; font-weight: 700; letter-spacing: -0.035em; }
+    .performance-message { max-width: 335px; margin: 11px 0 0; color: #dbeafe; font-size: 0.95rem; line-height: 1.6; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .stat-card { min-height: 132px; padding: 20px; }
+    .stat-icon {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+    }
+
+    .stat-icon svg { width: 18px; height: 18px; }
+    .stat-card:nth-child(1) .stat-icon { color: #047857; background: #d1fae5; }
+    .stat-card:nth-child(2) .stat-icon { color: #b91c1c; background: #fee2e2; }
+    .stat-card:nth-child(3) .stat-icon { color: #1d4ed8; background: #dbeafe; }
+    .stat-card:nth-child(4) .stat-icon { color: #0f766e; background: #ccfbf1; }
+
+    .stat-value { margin: 0; color: var(--qm-dark); font-size: 1.42rem; font-weight: 700; letter-spacing: -0.04em; }
+    .stat-label { margin: 3px 0 0; color: var(--qm-muted); font-size: 0.84rem; font-weight: 600; }
+
+    .review-section { margin-top: 28px; }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 15px;
+    }
+
+    .section-head h2 { margin: 0; color: var(--qm-dark); font-size: 1.36rem; font-weight: 700; letter-spacing: -0.035em; }
+    .section-head p { margin: 0; color: var(--qm-muted); font-size: 0.88rem; }
+
+    .review-card { overflow: hidden; }
+    .table-responsive { overflow-x: auto; }
+    .review-table { width: 100%; min-width: 720px; margin: 0; border-collapse: collapse; }
+    .review-table th {
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--qm-border);
+      color: #64748b;
+      background: #f8fafc;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .review-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid #edf2f7;
+      color: #334155;
+      font-size: 0.88rem;
+      vertical-align: middle;
+    }
+
+    .review-table tr:last-child td { border-bottom: 0; }
+    .question-cell { width: 39%; color: #0f172a !important; font-weight: 600; }
+    .answer-correct { color: #047857 !important; }
+    .answer-wrong { color: #b91c1c !important; }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-badge svg { width: 14px; height: 14px; }
+    .status-correct { color: #047857; background: #d1fae5; }
+    .status-incorrect { color: #b91c1c; background: #fee2e2; }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 29px;
+    }
+
+    .qm-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 11px 18px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .qm-button:hover { transform: translateY(-1px); }
+    .qm-button:focus-visible, .qm-nav a:focus-visible { outline: 3px solid rgba(20, 184, 166, 0.36); outline-offset: 3px; }
+    .qm-button svg { width: 17px; height: 17px; }
+    .button-primary { color: #fff; background: #2563eb; box-shadow: 0 9px 18px rgba(37, 99, 235, 0.20); }
+    .button-secondary { border-color: #cbd5e1; color: #334155; background: #fff; }
+    .button-history { color: #0f766e; background: #f0fdfa; border-color: #99f6e4; }
+
+    .action-status {
+      min-height: 24px;
+      margin: 14px 0 0;
+      color: #0f766e;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .history-panel {
+      display: none;
+      max-width: 550px;
+      margin: 16px auto 0;
+      padding: 15px 18px;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      color: #475569;
+      background: #eff6ff;
+      font-size: 0.86rem;
+      text-align: center;
+    }
+
+    .history-panel.is-visible { display: block; animation: fadeUp 180ms ease; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 860px) {
+      .qm-header-inner { gap: 17px; }
+      .qm-nav { gap: 14px; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 620px) {
+      .qm-header-inner { padding: 12px 16px; }
+      .qm-brand span { display: none; }
+      .qm-nav a:not(.active) { display: none; }
+      .profile-copy { display: none; }
+      .profile-chip { padding-left: 8px; }
+      .qm-main { padding: 25px 16px 40px; }
+      .completion-banner { min-height: 174px; padding: 25px 18px; }
+      .score-card { flex-direction: column; text-align: center; }
+      .score-copy p { margin: 0 auto; }
+      .stats-grid { gap: 11px; }
+      .stat-card { min-height: 118px; padding: 16px; }
+      .section-head { align-items: flex-start; flex-direction: column; gap: 4px; }
+      .action-row { flex-direction: column; }
+      .qm-button { width: 100%; }
+    }
+  </style>
+  <script src="/_sdk/efe904fe8a212716.data_sdk.js" type="text/javascript" integrity="sha512-oiO0pmn5llS1uDeB2l690YywxqOe/a0U1kzY6RGaLZXtyh9YjTk1CUoK/bJUugc1QbUaJMJ3IE1MtpNY5NBZCw=="></script>
+  <script src="/_sdk/6125e8aa3c264a2d.resizing_sdk.js" type="text/javascript" integrity="sha512-+j9iK2FF/yFSTU389rFqKj3v0s1ELh1r0aj3mqpsVRZujaeWi0WgN7jmTcWLcBq91dz3NCEyXqMtHbwpOxhDYg=="></script>
+ </head>
+ <body data-template-id="__page-root">
+  <div class="qm-app">
+   <header data-template-id="results-header" class="qm-header canva-header">
+    <div class="qm-header-inner"><a href="#top" class="qm-brand" aria-label="QuizMaster home"> <span class="brand-mark" aria-hidden="true"><i data-lucide="graduation-cap"></i></span> <span data-template-id="brand-name" class="canva-text"></span> </a>
+     <nav class="qm-nav" aria-label="Dashboard navigation"><a data-template-id="nav-dashboard" class="canva-link active" href="index.html"></a> <a data-template-id="nav-quizzes" class="canva-link" href="quizzes.html"></a> <a data-template-id="nav-history" class="canva-link" href="history.html"></a>
+     </nav>
+     <div class="profile-chip" aria-label="User profile"><span class="avatar" aria-hidden="true">AM</span>
+      <div class="profile-copy"><strong data-template-id="profile-name" class="canva-text"></strong> <span data-template-id="profile-role" class="canva-text"></span>
+      </div>
+     </div>
+    </div>
+   </header>
+   <main id="top" class="qm-main">
+    <section data-template-id="completion-banner" class="completion-banner canva-banner" aria-labelledby="completion-title">
+     <div class="completion-content">
+      <div class="success-icon" aria-hidden="true">
+       <i data-lucide="check"></i>
+      </div>
+      <h1 data-template-id="completion-title" class="completion-title canva-text"></h1>
+      <p data-template-id="completion-subtitle" class="completion-subtitle canva-text"></p>
+     </div>
+    </section>
+    <section class="summary-grid" aria-label="Performance summary">
+     <article data-template-id="score-card" class="qm-card score-card canva-card">
+      <div id="score-ring" class="score-ring" role="progressbar" aria-label="Quiz score" aria-valuemin="0" aria-valuemax="100" aria-valuenow="85"><span id="score-percent" class="score-value">85%</span>
+      </div>
+      <div class="score-copy"><span data-template-id="score-label" class="score-label canva-text"></span>
+       <h2 id="score-count">8 / 10 Correct</h2>
+       <p data-template-id="score-helper" class="canva-text"></p>
+      </div>
+     </article>
+     <article data-template-id="performance-card" class="qm-card performance-card canva-card">
+      <p data-template-id="performance-eyebrow" class="performance-eyebrow canva-text"></p>
+      <h2 data-template-id="performance-heading" class="performance-heading canva-text"></h2>
+      <p id="performance-message" class="performance-message">Excellent performance! Keep practicing to improve your score.</p>
+     </article>
+    </section>
+    <section class="stats-grid" aria-label="Quiz statistics">
+     <article data-template-id="correct-stat-card" class="qm-card stat-card canva-card">
+      <div class="stat-icon" aria-hidden="true">
+       <i data-lucide="circle-check"></i>
+      </div>
+      <p id="correct-stat" class="stat-value">8</p>
+      <p data-template-id="correct-stat-label" class="stat-label canva-text"></p>
+     </article>
+     <article data-template-id="wrong-stat-card" class="qm-card stat-card canva-card">
+      <div class="stat-icon" aria-hidden="true">
+       <i data-lucide="circle-x"></i>
+      </div>
+      <p id="wrong-stat" class="stat-value">2</p>
+      <p data-template-id="wrong-stat-label" class="stat-label canva-text"></p>
+     </article>
+     <article data-template-id="total-stat-card" class="qm-card stat-card canva-card">
+      <div class="stat-icon" aria-hidden="true">
+       <i data-lucide="list-checks"></i>
+      </div>
+      <p id="total-stat" class="stat-value">10</p>
+      <p data-template-id="total-stat-label" class="stat-label canva-text"></p>
+     </article>
+     <article data-template-id="time-stat-card" class="qm-card stat-card canva-card">
+      <div class="stat-icon" aria-hidden="true">
+       <i data-lucide="clock-3"></i>
+      </div>
+      <p id="time-stat" class="stat-value">08:42</p>
+      <p data-template-id="time-stat-label" class="stat-label canva-text"></p>
+     </article>
+    </section>
+    <section id="review" class="review-section" aria-labelledby="review-heading">
+     <div class="section-head">
+      <div>
+       <h2 data-template-id="review-heading" class="canva-text"></h2>
+       <p data-template-id="review-subtitle" class="canva-text"></p>
+      </div>
+     </div>
+     <div data-template-id="review-card" class="qm-card review-card canva-card">
+      <div class="table-responsive">
+       <table class="review-table">
+        <thead>
+         <tr>
+          <th data-template-id="question-column" class="canva-text"></th>
+          <th data-template-id="your-answer-column" class="canva-text"></th>
+          <th data-template-id="correct-answer-column" class="canva-text"></th>
+          <th data-template-id="status-column" class="canva-text"></th>
+         </tr>
+        </thead>
+        <tbody id="answer-review-body">
+         <tr data-question-id="1">
+          <td class="question-cell">What is JavaScript primarily used for?</td>
+          <td class="answer-correct">Creating interactive web pages</td>
+          <td>Creating interactive web pages</td>
+          <td><span class="status-badge status-correct"><i data-lucide="check"></i>Correct</span></td>
+         </tr>
+         <tr data-question-id="2">
+          <td class="question-cell">Which keyword declares a block-scoped variable?</td>
+          <td class="answer-correct">let</td>
+          <td>let</td>
+          <td><span class="status-badge status-correct"><i data-lucide="check"></i>Correct</span></td>
+         </tr>
+         <tr data-question-id="3">
+          <td class="question-cell">Which method parses JSON text?</td>
+          <td class="answer-correct">JSON.parse()</td>
+          <td>JSON.parse()</td>
+          <td><span class="status-badge status-correct"><i data-lucide="check"></i>Correct</span></td>
+         </tr>
+         <tr data-question-id="4">
+          <td class="question-cell">What does DOM stand for?</td>
+          <td class="answer-wrong">Data Object Model</td>
+          <td>Document Object Model</td>
+          <td><span class="status-badge status-incorrect"><i data-lucide="x"></i>Incorrect</span></td>
+         </tr>
+         <tr data-question-id="5">
+          <td class="question-cell">Which operator checks value and type equality?</td>
+          <td class="answer-correct">===</td>
+          <td>===</td>
+          <td><span class="status-badge status-correct"><i data-lucide="check"></i>Correct</span></td>
+         </tr>
+         <tr data-question-id="6">
+          <td class="question-cell">How do you write a single-line comment?</td>
+          <td class="answer-correct">// comment</td>
+          <td>// comment</td>
+          <td><span class="status-badge status-correct"><i data-lucide="check"></i>Correct</span></td>
+         </tr>
+         <tr data-question-id="7">
+          <td class="question-cell">Which array method adds an item to the end?</td>
+          <td class="answer-correct">push()</td>
+          <td>push()</td>
+          <td><span class="status-badge status-correct"><i data-lucide="check"></i>Correct</span></td>
+         </tr>
+         <tr data-question-id="8">
+          <td class="question-cell">What is the result type of typeof true?</td>
+          <td class="answer-correct">boolean</td>
+          <td>boolean</td>
+          <td><span class="status-badge status-correct"><i data-lucide="check"></i>Correct</span></td>
+         </tr>
+         <tr data-question-id="9">
+          <td class="question-cell">Which event occurs when a button is selected?</td>
+          <td class="answer-correct">click</td>
+          <td>click</td>
+          <td><span class="status-badge status-correct"><i data-lucide="check"></i>Correct</span></td>
+         </tr>
+         <tr data-question-id="10">
+          <td class="question-cell">What does setTimeout do?</td>
+          <td class="answer-wrong">Repeats code forever</td>
+          <td>Delays a function call</td>
+          <td><span class="status-badge status-incorrect"><i data-lucide="x"></i>Incorrect</span></td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </section>
+    <section id="dashboard" aria-label="Quiz result actions">
+     <div class="action-row"><button id="try-again-button" data-template-id="try-again-button" class="qm-button button-primary canva-button" type="button"> <i data-lucide="rotate-ccw" aria-hidden="true"></i> </button> <button id="dashboard-button" data-template-id="dashboard-button" class="qm-button button-secondary canva-button" type="button"> <i data-lucide="layout-dashboard" aria-hidden="true"></i> </button> <button id="history-button" data-template-id="history-button" class="qm-button button-history canva-button" type="button" aria-label="View quiz history"> <i data-lucide="history" aria-hidden="true"></i> </button>
+     </div>
+     <p id="action-status" class="action-status" aria-live="polite"></p>
+    </section>
+   </main>
+  </div>
+  <script src="/_sdk/6f16dc4ffc0cf3fe.editing_sdk.js" integrity="sha512-XcGkt+MVg9QK/rlrq9umdkP9LzshVjIu+vaITjWOSFti+dqk5aHBHkCCQ/IXnnUyJtw0F+lYzvT7m4EfPrBrjg=="></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      lucide.createIcons();
+
+      const scoreRing = document.getElementById("score-ring");
+      const scorePercent = document.getElementById("score-percent");
+      const scoreCount = document.getElementById("score-count");
+      const correctStat = document.getElementById("correct-stat");
+      const wrongStat = document.getElementById("wrong-stat");
+      const totalStat = document.getElementById("total-stat");
+      const timeStat = document.getElementById("time-stat");
+      const performanceMessage = document.getElementById("performance-message");
+      const reviewBody = document.getElementById("answer-review-body");
+      const actionStatus = document.getElementById("action-status");
+      const historyButton = document.getElementById("history-button");
+      let latestQuizTitle = "";
+      const quizPages = {
+        "JavaScript Fundamentals": "quizmaster.html",
+        "HTML & CSS": "htmlcss.html",
+        "Bootstrap 5": "bootsrap.html",
+        "General Knowledge": "generalknowledge.html",
+        "JavaScript Functions": "jsfunction.html",
+        "Web Development Basics": "webdev.html",
+        "Computer Fundamentals": "cfc.html"
+      };
+
+      function makeStatusBadge(isCorrect) {
+        const badge = document.createElement("span");
+        badge.className = "status-badge " + (isCorrect ? "status-correct" : "status-incorrect");
+        badge.innerHTML = isCorrect
+          ? '<i data-lucide="check"></i><span>Correct</span>'
+          : '<i data-lucide="x"></i><span>Incorrect</span>';
+        return badge;
+      }
+
+      function renderReview(answers) {
+        if (!Array.isArray(answers)) return;
+        reviewBody.innerHTML = "";
+
+        answers.forEach(function (answer, index) {
+          const row = document.createElement("tr");
+          row.dataset.questionId = String(index + 1);
+
+          const questionCell = document.createElement("td");
+          questionCell.className = "question-cell";
+          questionCell.textContent = answer.question || "Question " + (index + 1);
+
+          const userAnswerCell = document.createElement("td");
+          userAnswerCell.className = answer.correct ? "answer-correct" : "answer-wrong";
+          userAnswerCell.textContent = answer.userAnswer || "Not answered";
+
+          const correctAnswerCell = document.createElement("td");
+          correctAnswerCell.textContent = answer.correctAnswer || "—";
+
+          const statusCell = document.createElement("td");
+          statusCell.appendChild(makeStatusBadge(Boolean(answer.correct)));
+
+          row.append(questionCell, userAnswerCell, correctAnswerCell, statusCell);
+          reviewBody.appendChild(row);
+        });
+
+        lucide.createIcons();
+      }
+
+      window.QuizMasterResults = {
+        render: function (result) {
+          if (!result) return;
+          latestQuizTitle = result.quizTitle || "";
+
+          const total = Number(result.totalQuestions) || 0;
+          const correct = Number(result.correctAnswers) || 0;
+          const wrong = typeof result.wrongAnswers === "number" ? result.wrongAnswers : Math.max(total - correct, 0);
+          const percent = typeof result.percent === "number" ? Math.round(result.percent) : (total ? Math.round((correct / total) * 100) : 0);
+
+          scoreRing.style.background = "conic-gradient(#2563eb 0deg " + (percent * 3.6) + "deg, #e2e8f0 " + (percent * 3.6) + "deg 360deg)";
+          scoreRing.setAttribute("aria-valuenow", String(percent));
+          scorePercent.textContent = percent + "%";
+          scoreCount.textContent = correct + " / " + total + " Correct";
+          correctStat.textContent = correct;
+          wrongStat.textContent = wrong;
+          totalStat.textContent = total;
+          timeStat.textContent = result.timeUsed || "00:00";
+          performanceMessage.textContent = result.message || "Excellent performance! Keep practicing to improve your score.";
+          const completionTitle = document.querySelector('[data-template-id="completion-title"]');
+          const completionSubtitle = document.querySelector('[data-template-id="completion-subtitle"]');
+          const performanceHeading = document.querySelector('[data-template-id="performance-heading"]');
+          if (completionTitle) completionTitle.textContent = "Quiz complete!";
+          if (completionSubtitle) completionSubtitle.textContent = (result.quizTitle || "Your quiz") + " results are ready.";
+          if (performanceHeading) performanceHeading.textContent = result.quizTitle || "Your performance";
+
+          if (Array.isArray(result.answers)) renderReview(result.answers);
+        }
+      };
+
+      document.getElementById("try-again-button").addEventListener("click", function () {
+        try {
+          localStorage.removeItem("quizmaster-result");
+          sessionStorage.removeItem("quizmaster-result");
+        } catch (error) {
+          /* Continue to the quiz even if browser storage is unavailable. */
+        }
+        window.location.href = quizPages[latestQuizTitle] || "index.html";
+      });
+
+      document.getElementById("dashboard-button").addEventListener("click", function () {
+        window.location.href = "index.html";
+      });
+
+      historyButton.addEventListener("click", function () {
+        window.location.href = "history.html";
+      });
+
+      try {
+        const savedResult = localStorage.getItem("quizmaster-result") || sessionStorage.getItem("quizmaster-result");
+        if (savedResult) window.QuizMasterResults.render(JSON.parse(savedResult));
+      } catch (error) {
+        /* Keep the polished sample result visible if no stored result is present. */
+      }
+    });
+  </script>
+ </body>
+</html>

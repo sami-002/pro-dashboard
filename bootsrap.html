@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMaster | Bootstrap</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+ <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js" type="text/javascript"></script>
+ <!-- they should be deleted -->
+  <script src="/_sdk/efe904fe8a212716.data_sdk.js" type="text/javascript" integrity="sha512-oiO0pmn5llS1uDeB2l690YywxqOe/a0U1kzY6RGaLZXtyh9YjTk1CUoK/bJUugc1QbUaJMJ3IE1MtpNY5NBZCw=="></script>
+  <script src="/_sdk/6125e8aa3c264a2d.resizing_sdk.js" type="text/javascript" integrity="sha512-+j9iK2FF/yFSTU389rFqKj3v0s1ELh1r0aj3mqpsVRZujaeWi0WgN7jmTcWLcBq91dz3NCEyXqMtHbwpOxhDYg=="></script>
+  <link rel="stylesheet" href="quizmaster.css">
+</head>
+<body data-template-id="__page-root">
+<div class="qm-shell">
+  <header data-template-id="quiz-header" class="qm-header canva-header">
+    <div class="qm-header-inner">
+     <div data-template-id="brand-name" class="qm-brand canva-text"><span class="qm-brand-mark" aria-hidden="true"><i class="bi bi-mortarboard-fill"></i></span> <span>QuizMaster</span>
+     </div>
+     <div class="qm-header-title">
+      <h1 data-template-id="quiz-title" class="quiz-name canva-text"></h1><span id="question-progress" class="question-progress" aria-live="polite">Question 1 of 10</span>
+     </div>
+     <div id="timer-box" class="timer-box" aria-label="Time remaining"><i class="bi bi-stopwatch-fill" aria-hidden="true"></i>
+       <time id="countdown-timer" aria-live="polite">14:32</time>
+     </div>
+    </div>
+   </header>
+<main class="qm-main">
+<div class="qm-layout">
+<section>
+ <div class="qm-progress-wrap">
+       <div class="progress-meta">
+        <span data-template-id="progress-label" class="canva-text"></span> <span id="progress-percentage">10% complete</span>
+       </div>
+       <div class="qm-progress" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10">
+        <div id="quiz-progress-bar" class="qm-progress-bar"></div>
+       </div>
+ </div>
+       <article data-template-id="question-card" class="question-card canva-card">
+       <p id="question-number" class="question-eyebrow">Question 1</p>
+       <h2 id="question-title" class="question-title">What is JavaScript primarily used for?</h2>
+       <div id="options-list" class="options-list" role="radiogroup" aria-label="Answer options">
+        <button type="button" class="option-card" role="radio" aria-checked="false" data-option-index="0">
+         <span class="option-letter" aria-hidden="true">A</span> 
+         <span class="option-text">Creating interactive web pages</span>
+          <span class="radio-indicator" aria-hidden="true"></span>
+         </button>
+          <button type="button" class="option-card" role="radio" aria-checked="false" data-option-index="1"> <span class="option-letter" aria-hidden="true">B</span> <span class="option-text">Managing databases</span> <span class="radio-indicator" aria-hidden="true"></span>
+           </button>
+           <button type="button" class="option-card" role="radio" aria-checked="false" data-option-index="2"> <span class="option-letter" aria-hidden="true">C</span> <span class="option-text">Designing hardware</span> <span class="radio-indicator" aria-hidden="true"></span>
+           </button> 
+           <button type="button" class="option-card" role="radio" aria-checked="false" data-option-index="3"> <span class="option-letter" aria-hidden="true">D</span> <span class="option-text">Managing operating systems</span> <span class="radio-indicator" aria-hidden="true"></span>
+           </button>
+       </div>
+
+       <div class="question-actions"><button id="previous-button" data-template-id="previous-button" class="qm-action qm-action-secondary canva-button" type="button"> </button> <button id="next-button" data-template-id="next-button" class="qm-action qm-action-primary canva-button" type="button"> </button>
+         <button id="submit-button" data-template-id="submit-button" class="qm-action qm-action-submit canva-button hidden" type="button"> </button>
+       </div>
+       <p id="quiz-status" class="qm-status" aria-live="polite"></p>
+      </article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</section>
+  <aside class="qm-sidebar" aria-label="Quiz details">
+      <section data-template-id="navigator-card" class="side-card canva-panel">
+       <h2 data-template-id="navigator-heading" class="side-heading canva-text"></h2>
+       <nav class="question-nav-grid" aria-label="Question navigation"><button type="button" class="question-nav-button is-current" aria-label="Question 1, current" aria-current="step" data-question-index="0">1</button> <button type="button" class="question-nav-button" aria-label="Question 2, unanswered" data-question-index="1">2</button> <button type="button" class="question-nav-button" aria-label="Question 3, unanswered" data-question-index="2">3</button> <button type="button" class="question-nav-button" aria-label="Question 4, unanswered" data-question-index="3">4</button> <button type="button" class="question-nav-button" aria-label="Question 5, unanswered" data-question-index="4">5</button> <button type="button" class="question-nav-button" aria-label="Question 6, unanswered" data-question-index="5">6</button> <button type="button" class="question-nav-button" aria-label="Question 7, unanswered" data-question-index="6">7</button> <button type="button" class="question-nav-button" aria-label="Question 8, unanswered" data-question-index="7">8</button> <button type="button" class="question-nav-button" aria-label="Question 9, unanswered" data-question-index="8">9</button> <button type="button" class="question-nav-button" aria-label="Question 10, unanswered" data-question-index="9">10</button>
+       </nav>
+       <div class="navigator-key" aria-label="Question status legend"><span class="key-item"><span class="key-dot current"></span>Current</span> <span class="key-item"><span class="key-dot answered"></span>Answered</span> <span class="key-item"><span class="key-dot"></span>Unanswered</span>
+       </div>
+      </section>
+      <section data-template-id="information-card" class="side-card canva-panel">
+       <h2 data-template-id="information-heading" class="side-heading canva-text"></h2>
+       <dl class="quiz-stats">
+        <div class="stat-line">
+         <dt data-template-id="total-label" class="canva-text"></dt>
+         <dd id="total-questions">
+          10
+         </dd>
+        </div>
+        <div class="stat-line">
+         <dt data-template-id="answered-label" class="canva-text"></dt>
+         <dd id="answered-questions" class="accent">
+          0
+         </dd>
+        </div>
+        <div class="stat-line">
+         <dt data-template-id="remaining-label" class="canva-text"></dt>
+         <dd id="remaining-questions">
+          10
+         </dd>
+        </div>
+        <div class="stat-line">
+         <dt data-template-id="time-label" class="canva-text"></dt>
+         <dd id="time-remaining">
+          14:32
+         </dd>
+        </div>
+       </dl>
+      </section>
+     </aside>
+
+</div>
+
+</main>
+
+</div>
+  <script>
+ 
+document.addEventListener("DOMContentLoaded", () => {
+  // 1. Quiz questions and correct answers
+ // 1. Quiz questions and  answers  bootstrab
+const questions = [
+    {
+        question: "What is Bootstrap primarily used for?",
+        answers: [
+            "Managing databases",
+            "Creating responsive websites",
+            "Writing server-side code",
+            "Building operating systems"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Which class creates a primary button in Bootstrap?",
+        answers: [
+            "btn-primary",
+            "button-primary",
+            "primary-btn",
+            "btn-main"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Which Bootstrap class creates a container?",
+        answers: [".box", ".wrapper", ".container", ".section"],
+        correctAnswer: 2
+    },
+    {
+        question: "Which Bootstrap class creates a responsive grid row?",
+        answers: [".grid", ".column", ".container", ".row"],
+        correctAnswer: 3
+    },
+    {
+        question: "Which class creates a full-width button in Bootstrap 5?",
+        answers: [
+            "w-100",
+            "btn-full",
+            "btn-block",
+            "full-width"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Which class adds a green success color to text in Bootstrap?",
+        answers: [
+            "text-green",
+            "text-success",
+            "text-positive",
+            "success-text"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Which Bootstrap class creates a navigation bar?",
+        answers: [".navigation", ".nav-bar", ".navbar", ".menu"],
+        correctAnswer: 2
+    },
+    {
+        question: "Which class adds margin to the top in Bootstrap?",
+        answers: [".pt-3", ".pb-3", ".ms-3", ".mt-3"],
+        correctAnswer: 3
+    },
+    {
+        question: "Which Bootstrap class hides an element on all screen sizes?",
+        answers: [".d-none", ".hide", ".invisible", ".display-none"],
+        correctAnswer: 0
+    },
+    {
+        question: "Which class creates a responsive image in Bootstrap 5?",
+        answers: [
+            ".image-responsive",
+            ".img-fluid",
+            ".responsive-img",
+            ".img-responsive"
+        ],
+        correctAnswer: 1
+    }
+];
+
+  // 2. Quiz state
+  let currentQuestion = 0;
+  const userAnswers = new Array(questions.length).fill(null);
+  let remainingSeconds = 14 * 60 + 32;
+  let isSubmitted = false;
+  let timerInterval;
+
+  // 3. Select HTML elements
+  const $ = (id) => document.getElementById(id);
+
+  const quizTitle = document.querySelector(
+    '[data-template-id="quiz-title"]'
+  );
+  const progressLabel = document.querySelector(
+    '[data-template-id="progress-label"]'
+  );
+  const previousButton = $("previous-button");
+  const nextButton = $("next-button");
+  const submitButton = $("submit-button");
+  const optionsList = $("options-list");
+  const questionNumber = $("question-number");
+  const questionTitle = $("question-title");
+  const questionProgress = $("question-progress");
+  const progressPercentage = $("progress-percentage");
+  const progressBar = $("quiz-progress-bar");
+  const progressTrack = progressBar.parentElement;
+  const status = $("quiz-status");
+  const countdownTimer = $("countdown-timer");
+  const timeRemaining = $("time-remaining");
+  const timerBox = $("timer-box");
+
+  const navigator = document.querySelector(".question-nav-grid");
+  const navigatorHeading = document.querySelector(
+    '[data-template-id="navigator-heading"]'
+  );
+  const informationHeading = document.querySelector(
+    '[data-template-id="information-heading"]'
+  );
+
+  // 4. Fill the previously empty HTML content
+  quizTitle.textContent = "Bootstrap 5";
+  progressLabel.textContent = "Quiz Progress";
+  previousButton.textContent = "Previous";
+  nextButton.textContent = "Next";
+  submitButton.textContent = "Submit Quiz";
+  navigatorHeading.textContent = "Question Navigator";
+  informationHeading.textContent = "Quiz Information";
+
+  document.querySelector('[data-template-id="total-label"]')
+    .textContent = "Total Questions";
+  document.querySelector('[data-template-id="answered-label"]')
+    .textContent = "Answered";
+  document.querySelector('[data-template-id="remaining-label"]')
+    .textContent = "Remaining";
+  document.querySelector('[data-template-id="time-label"]')
+    .textContent = "Time Remaining";
+
+  $("total-questions").textContent = questions.length;
+
+  // 5. Create question navigation buttons
+  navigator.replaceChildren();
+
+  questions.forEach((question, index) => {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "question-nav-button";
+    button.textContent = index + 1;
+    button.dataset.questionIndex = index;
+    button.setAttribute(
+      "aria-label",
+      `Question ${index + 1}, unanswered`
+    );
+
+    navigator.appendChild(button);
+  });
+
+  const navigatorButtons = Array.from(
+    navigator.querySelectorAll(".question-nav-button")
+  );
+
+  // 6. Format time as MM:SS
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secondsRemaining = seconds % 60;
+
+    return (
+      String(minutes).padStart(2, "0") +
+      ":" +
+      String(secondsRemaining).padStart(2, "0")
+    );
+  }
+
+  // 7. Update quiz statistics
+  function updateStats() {
+    const answeredCount = userAnswers.filter(
+      (answer) => answer !== null
+    ).length;
+
+    $("answered-questions").textContent = answeredCount;
+    $("remaining-questions").textContent =
+      questions.length - answeredCount;
+  }
+
+  // 8. Display the current question and its options
+  function renderQuestion() {
+    const question = questions[currentQuestion];
+    const selectedAnswer = userAnswers[currentQuestion];
+
+    questionNumber.textContent =
+      `Question ${currentQuestion + 1}`;
+
+    questionTitle.textContent = question.question;
+
+    questionProgress.textContent =
+      `Question ${currentQuestion + 1} of ${questions.length}`;
+
+    const percentage = Math.round(
+      ((currentQuestion + 1) / questions.length) * 100
+    );
+
+    progressPercentage.textContent = `${percentage}% complete`;
+    progressBar.style.width = `${percentage}%`;
+    progressTrack.setAttribute("aria-valuenow", percentage);
+
+    // Rebuild the options for each question
+    optionsList.replaceChildren();
+
+    question.answers.forEach((answer, index) => {
+      const button = document.createElement("button");
+      const letter = document.createElement("span");
+      const text = document.createElement("span");
+      const indicator = document.createElement("span");
+
+      button.type = "button";
+      button.className = "option-card";
+      button.dataset.optionIndex = index;
+      button.setAttribute("role", "radio");
+
+      letter.className = "option-letter";
+      letter.setAttribute("aria-hidden", "true");
+      letter.textContent = String.fromCharCode(65 + index);
+
+      text.className = "option-text";
+      text.textContent = answer;
+
+      indicator.className = "radio-indicator";
+      indicator.setAttribute("aria-hidden", "true");
+
+      button.append(letter, text, indicator);
+
+      const isSelected = selectedAnswer === index;
+
+      button.classList.toggle("is-selected", isSelected);
+      button.setAttribute("aria-checked", String(isSelected));
+      button.disabled = isSubmitted;
+
+      optionsList.appendChild(button);
+    });
+
+    // Update Previous, Next and Submit buttons
+    previousButton.disabled =
+      currentQuestion === 0 || isSubmitted;
+
+    nextButton.classList.toggle(
+      "hidden",
+      currentQuestion === questions.length - 1
+    );
+
+    nextButton.disabled = isSubmitted;
+
+    submitButton.classList.toggle(
+      "hidden",
+      currentQuestion !== questions.length - 1
+    );
+
+    submitButton.disabled = isSubmitted;
+
+    // Update the question navigator
+    navigatorButtons.forEach((button, index) => {
+      const isCurrent = index === currentQuestion;
+      const isAnswered = userAnswers[index] !== null;
+
+      button.classList.toggle("is-current", isCurrent);
+      button.classList.toggle("is-answered", isAnswered);
+      button.disabled = isSubmitted;
+
+      if (isCurrent) {
+        button.setAttribute("aria-current", "step");
+      } else {
+        button.removeAttribute("aria-current");
+      }
+
+      const label = isCurrent
+        ? "current"
+        : isAnswered
+          ? "answered"
+          : "unanswered";
+
+      button.setAttribute(
+        "aria-label",
+        `Question ${index + 1}, ${label}`
+      );
+    });
+
+    updateStats();
+  }
+
+  // 9. Save the selected answer
+  function selectAnswer(index) {
+    if (isSubmitted) return;
+
+    userAnswers[currentQuestion] = index;
+
+    status.textContent = "Answer selected and saved.";
+    renderQuestion();
+  }
+
+  optionsList.addEventListener("click", (event) => {
+    const option = event.target.closest(".option-card");
+
+    if (!option || !optionsList.contains(option)) return;
+
+    selectAnswer(Number(option.dataset.optionIndex));
+  });
+
+  // 10. Previous question
+  previousButton.addEventListener("click", () => {
+    if (currentQuestion > 0 && !isSubmitted) {
+      currentQuestion--;
+      status.textContent = "";
+      renderQuestion();
+    }
+  });
+
+  // 11. Next question
+  nextButton.addEventListener("click", () => {
+    if (
+      currentQuestion < questions.length - 1 &&
+      !isSubmitted
+    ) {
+      currentQuestion++;
+      status.textContent = "";
+      renderQuestion();
+    }
+  });
+
+  // 12. Navigate directly to a question
+  navigator.addEventListener("click", (event) => {
+    const button = event.target.closest(".question-nav-button");
+
+    if (!button || isSubmitted) return;
+
+    currentQuestion = Number(button.dataset.questionIndex);
+    status.textContent = "";
+    renderQuestion();
+  });
+
+  // 13. Submit the quiz and calculate the score
+  function submitQuiz(timeExpired = false) {
+    if (isSubmitted) return;
+
+    isSubmitted = true;
+    clearInterval(timerInterval);
+
+    const answeredCount = userAnswers.filter((answer) => answer !== null).length;
+    const score = questions.reduce((total, question, index) => total + (userAnswers[index] === question.correctAnswer ? 1 : 0), 0);
+    const percent = Math.round((score / questions.length) * 100);
+    const quizResult = { quizTitle: "Bootstrap 5", totalQuestions: questions.length, correctAnswers: score, wrongAnswers: questions.length - score, percent, timeUsed: formatTime(Math.max(0, (14 * 60 + 32) - remainingSeconds)), message: timeExpired ? "The time limit ended. Review your answers and try again." : percent >= 80 ? "Excellent work! Keep practicing to build on this result." : "Keep practicing. Review the answers below and try again.", answers: questions.map((question, index) => { const selectedIndex = userAnswers[index]; return { question: question.question, userAnswer: selectedIndex === null ? "Not answered" : question.answers[selectedIndex], correctAnswer: question.answers[question.correctAnswer], correct: selectedIndex === question.correctAnswer }; }) };
+    const historyRecord = { id: String(Date.now()) + "-" + Math.random().toString(36).slice(2), quiz: quizResult.quizTitle, category: "Web Development", date: new Date().toISOString(), questions: quizResult.totalQuestions, score: quizResult.percent, correct: quizResult.correctAnswers, wrong: quizResult.wrongAnswers, status: quizResult.percent >= 70 ? "Passed" : "Review" };
+    try { const history = JSON.parse(localStorage.getItem("quizmaster-history") || "[]"); history.unshift(historyRecord); localStorage.setItem("quizmaster-history", JSON.stringify(history)); localStorage.setItem("quizmaster-result", JSON.stringify(quizResult)); }
+    catch (error) { const history = JSON.parse(sessionStorage.getItem("quizmaster-history") || "[]"); history.unshift(historyRecord); sessionStorage.setItem("quizmaster-history", JSON.stringify(history)); sessionStorage.setItem("quizmaster-result", JSON.stringify(quizResult)); }
+    renderQuestion();
+    status.textContent = `${timeExpired ? "Time is up! " : ""}Quiz submitted. Opening your result...`;
+    submitButton.textContent = "Quiz Submitted";
+    window.location.href = "result.html";
+  }
+
+  submitButton.addEventListener("click", () => {
+    submitQuiz();
+  });
+
+  // 14. Countdown timer
+  function tickTimer() {
+    const formatted = formatTime(remainingSeconds);
+
+    countdownTimer.textContent = formatted;
+    timeRemaining.textContent = formatted;
+
+    if (remainingSeconds <= 60) {
+      timerBox.classList.add("time-low");
+    }
+
+    if (remainingSeconds <= 0) {
+      submitQuiz(true);
+      return;
+    }
+
+    remainingSeconds--;
+  }
+
+  // 15. Start the quiz
+  renderQuestion();
+  tickTimer();
+  timerInterval = setInterval(tickTimer, 1000);
+});
+</script>
+    
+</body>
+</html>

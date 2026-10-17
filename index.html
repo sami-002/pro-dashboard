@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizMaster Student Dashboard</title>
+   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="index.css">
+</head>
+<body data-template-id="__page-root">
+  <div class="dashboard-shell">
+   <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+   <aside id="sidebar" class="sidebar" aria-label="Primary navigation">
+    <div class="flex items-center justify-between px-2 mb-9">
+     <div class="flex items-center gap-3">
+      <div class="brand-mark">
+       <i data-lucide="graduation-cap" width="21" height="21"></i>
+      </div><span data-template-id="brand-name" class="canva-text text-white font-bold tracking-tight"></span>
+     </div>
+     <button id="closeSidebar" type="button" class="lg:hidden text-slate-400 hover:text-white" aria-label="Close navigation"> <i data-lucide="x" width="21" height="21"></i> </button>
+    </div>
+    <nav class="flex-1" aria-label="QuizMaster navigation">
+      <a href="#dashboard" class="nav-link active" aria-current="page">
+        <i data-lucide="layout-dashboard" width="19" height="19"></i>
+        <span data-template-id="nav-dashboard" class="canva-text"></span></a> <a href="quizzes.html" class="nav-link"><i data-lucide="book-open" width="19" height="19"></i><span data-template-id="nav-quizzes" class="canva-text"></span></a> <a href="result.html" class="nav-link"><i data-lucide="chart-no-axes-combined" width="19" height="19"></i><span data-template-id="nav-results" class="canva-text"></span></a> <a href="history.html" class="nav-link"><i data-lucide="history" width="19" height="19"></i><span data-template-id="nav-history" class="canva-text"></span></a>
+     <div class="mt-7 mb-3 px-3 text-[11px] font-bold uppercase tracking-[.16em] text-slate-500">
+      Account
+     </div><a href="#profile" class="nav-link"><i data-lucide="circle-user-round" width="19" height="19"></i><span data-template-id="nav-profile" class="canva-text"></span></a> <a href="#settings" class="nav-link"><i data-lucide="settings-2" width="19" height="19"></i><span data-template-id="nav-settings" class="canva-text"></span></a>
+    </nav>
+    <button type="button" class="nav-link w-full text-left mt-3"><i data-lucide="log-out" width="19" height="19"></i>
+      <span data-template-id="nav-logout" class="canva-text"></span></button>
+   </aside>
+   <div class="main-area">
+    <header class="topbar px-4 sm:px-7">
+     <div class="h-[76px] flex items-center justify-between gap-3 max-w-[1500px] mx-auto">
+      <div class="flex items-center gap-3"><button id="openSidebar" type="button" class="lg:hidden w-10 h-10 rounded-xl bg-white border border-slate-200 grid place-items-center" aria-label="Open navigation"> <i data-lucide="menu" width="20" height="20"></i> </button>
+       <div>
+        <p data-template-id="breadcrumb-label" class="canva-text text-xs font-semibold uppercase tracking-[.15em] text-slate-400 hidden sm:block"></p>
+        <h1 data-template-id="page-title" class="canva-text font-bold text-slate-900"></h1>
+       </div>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+       <div class="search-wrap relative">
+        <label for="quizSearch" class="sr-only">Search quizzes</label>
+         <i data-lucide="search" width="17" height="17" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i> <input id="quizSearch" type="search" placeholder="Search quizzes..." class="w-52 xl:w-64 rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-400">
+       </div>
+       <!-- up to this part -->
+
+       <div class="relative"><button id="notificationButton" type="button" class="relative w-10 h-10 grid place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-blue-600" aria-label="Show notifications" aria-expanded="false"> <i data-lucide="bell" width="19" height="19"></i> <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-teal-500 border border-white"></span> </button>
+        <div id="notificationPanel" class="pop-panel surface p-4" role="status">
+         <p data-template-id="notification-title" class="canva-text font-bold text-slate-800"></p>
+         <p data-template-id="notification-copy" class="canva-text mt-1 text-sm text-slate-500"></p>
+        </div>
+       </div>
+
+       <div class="relative"><button id="profileButton" type="button" class="flex items-center gap-2 rounded-xl p-1.5 hover:bg-slate-100" aria-label="Open profile menu" aria-expanded="false">
+         <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 text-white grid place-items-center font-bold text-sm">
+          S
+         </div>
+         <span data-template-id="user-name" class="canva-text user-name font-semibold text-sm text-slate-700"></span> 
+         <i data-lucide="chevron-down" width="16" height="16" class="text-slate-400"></i> 
+        </button>
+        <div id="profilePanel" class="pop-panel surface overflow-hidden"><a href="#profile" data-template-id="profile-menu-item" class="canva-link block px-4 py-3 text-sm hover:bg-slate-50"></a> <a href="#settings" data-template-id="settings-menu-item" class="canva-link block px-4 py-3 border-t border-slate-100 text-sm hover:bg-slate-50"></a>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- we should do up to this part  -->
+    </header>
+    <main id="dashboard" class="max-w-[1500px] mx-auto p-4 sm:p-7">
+     <section class="welcome-card page-enter p-6 sm:p-8 lg:p-9 mb-6">
+      <div class="relative z-10 flex items-center justify-between gap-5">
+       <div class="welcome-copy">
+        <p data-template-id="welcome-kicker" class="canva-text text-teal-200 font-semibold text-sm mb-2"></p>
+        <h2 data-template-id="welcome-heading" class="canva-text display-serif text-3xl sm:text-4xl leading-tight"></h2>
+        <p data-template-id="welcome-subtitle" class="canva-text mt-3 max-w-xl text-blue-100 leading-relaxed"></p>
+       </div>
+       <div class="hidden sm:grid shrink-0 w-28 h-28 lg:w-36 lg:h-36 place-items-center rounded-[30px] bg-white/10 border border-white/15 rotate-3"><i data-lucide="notebook-tabs" width="60" height="60" class="text-teal-200 -rotate-3"></i>
+       </div>
+      </div>
+     </section>
+     <p id="actionMessage" class="hidden mb-5 rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 text-sm font-medium text-teal-800" role="status"></p>
+    <!-- from this section -->
+     <section aria-label="Quiz statistics" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-7 page-enter delay-one">
+      <article data-template-id="stat-total-card" class="canva-card surface stat-card p-5">
+       <div class="flex justify-between items-start">
+        <div class="soft-icon bg-blue-50 text-blue-600">
+         <i data-lucide="layers-3" width="21" height="21"></i>
+        </div><span data-template-id="stat-total-trend" class="canva-tag rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-600"></span>
+       </div>
+       <p data-template-id="stat-total-number" class="canva-text mt-5 text-3xl font-bold text-slate-900"></p>
+       <p data-template-id="stat-total-label" class="canva-text mt-1 text-sm text-slate-500"></p>
+      </article>
+      <article data-template-id="stat-completed-card" class="canva-card surface stat-card p-5">
+       <div class="flex justify-between items-start">
+        <div class="soft-icon bg-teal-50 text-teal-600">
+         <i data-lucide="circle-check-big" width="21" height="21"></i>
+        </div><span data-template-id="stat-completed-trend" class="canva-tag rounded-full bg-teal-50 px-2.5 py-1 text-xs font-bold text-teal-600"></span>
+       </div>
+       <p data-template-id="stat-completed-number" class="canva-text mt-5 text-3xl font-bold text-slate-900"></p>
+       <p data-template-id="stat-completed-label" class="canva-text mt-1 text-sm text-slate-500"></p>
+      </article>
+      <article data-template-id="stat-average-card" class="canva-card surface stat-card p-5">
+       <div class="flex justify-between items-start">
+        <div class="soft-icon bg-amber-50 text-amber-500">
+         <i data-lucide="target" width="21" height="21"></i>
+        </div><span data-template-id="stat-average-trend" class="canva-tag rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-600"></span>
+       </div>
+       <p data-template-id="stat-average-number" class="canva-text mt-5 text-3xl font-bold text-slate-900"></p>
+       <p data-template-id="stat-average-label" class="canva-text mt-1 text-sm text-slate-500"></p>
+      </article>
+      <article data-template-id="stat-best-card" class="canva-card surface stat-card p-5">
+       <div class="flex justify-between items-start">
+        <div class="soft-icon bg-violet-50 text-violet-600">
+         <i data-lucide="trophy" width="21" height="21"></i>
+        </div><span data-template-id="stat-best-trend" class="canva-tag rounded-full bg-violet-50 px-2.5 py-1 text-xs font-bold text-violet-600"></span>
+       </div>
+       <p data-template-id="stat-best-number" class="canva-text mt-5 text-3xl font-bold text-slate-900"></p>
+       <p data-template-id="stat-best-label" class="canva-text mt-1 text-sm text-slate-500"></p>
+      </article>
+     </section>
+     
+     <section id="quizzes" class="page-enter delay-two">
+      <div class="flex items-end justify-between gap-4 mb-4">
+       <div>
+        <p data-template-id="quiz-section-kicker" class="canva-text text-xs font-bold uppercase tracking-[.15em] text-blue-600"></p>
+        <h2 data-template-id="quiz-section-title" class="canva-text mt-1 font-bold text-slate-900"></h2>
+       </div><span data-template-id="quiz-count-label" class="canva-text text-sm text-slate-500"></span>
+      </div>
+      <div id="quizGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+       <article data-template-id="quiz-js-card" class="canva-card surface quiz-card p-5" data-search="javascript fundamentals learn variables functions and basic concepts">
+        <div class="flex items-start justify-between">
+         <div class="soft-icon bg-amber-50 text-amber-500">
+          <i data-lucide="braces" width="21" height="21"></i>
+         </div><span data-template-id="quiz-js-difficulty" class="canva-tag rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-600"></span>
+        </div>
+        <h3 data-template-id="quiz-js-title" class="canva-text mt-5 font-bold text-slate-900"></h3>
+        <p data-template-id="quiz-js-description" class="canva-text mt-2 text-sm leading-relaxed text-slate-500"></p>
+        <div class="flex items-center gap-4 mt-5 text-xs text-slate-500"><span class="flex items-center gap-1.5"><i data-lucide="list-checks" width="15" height="15"></i><span data-template-id="quiz-js-questions" class="canva-text"></span></span> <span class="flex items-center gap-1.5"><i data-lucide="clock-3" width="15" height="15"></i><span data-template-id="quiz-js-duration" class="canva-text"></span></span>
+        </div><button type="button" data-quiz="JavaScript Fundamentals" data-template-id="quiz-js-button" class="canva-button start-button mt-5 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-white"></button>
+       </article>
+       <article data-template-id="quiz-html-card" class="canva-card surface quiz-card p-5" data-search="html css semantics selectors responsive layouts">
+        <div class="flex items-start justify-between">
+         <div class="soft-icon bg-orange-50 text-orange-500">
+          <i data-lucide="code-2" width="21" height="21"></i>
+         </div><span data-template-id="quiz-html-difficulty" class="canva-tag rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-600"></span>
+        </div>
+        <h3 data-template-id="quiz-html-title" class="canva-text mt-5 font-bold text-slate-900"></h3>
+        <p data-template-id="quiz-html-description" class="canva-text mt-2 text-sm leading-relaxed text-slate-500"></p>
+        <div class="flex items-center gap-4 mt-5 text-xs text-slate-500"><span class="flex items-center gap-1.5"><i data-lucide="list-checks" width="15" height="15"></i><span data-template-id="quiz-html-questions" class="canva-text"></span></span> <span class="flex items-center gap-1.5"><i data-lucide="clock-3" width="15" height="15"></i><span data-template-id="quiz-html-duration" class="canva-text"></span></span>
+        </div><button type="button" data-quiz="HTML &amp; CSS" data-template-id="quiz-html-button" class="canva-button start-button mt-5 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-white"></button>
+       </article>
+       <article data-template-id="quiz-bootstrap-card" class="canva-card surface quiz-card p-5" data-search="bootstrap 5 grids components utility classes">
+        <div class="flex items-start justify-between">
+         <div class="soft-icon bg-violet-50 text-violet-600">
+          <i data-lucide="blocks" width="21" height="21"></i>
+         </div><span data-template-id="quiz-bootstrap-difficulty" class="canva-tag rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-600"></span>
+        </div>
+        <h3 data-template-id="quiz-bootstrap-title" class="canva-text mt-5 font-bold text-slate-900"></h3>
+        <p data-template-id="quiz-bootstrap-description" class="canva-text mt-2 text-sm leading-relaxed text-slate-500"></p>
+        <div class="flex items-center gap-4 mt-5 text-xs text-slate-500"><span class="flex items-center gap-1.5"><i data-lucide="list-checks" width="15" height="15"></i><span data-template-id="quiz-bootstrap-questions" class="canva-text"></span></span> <span class="flex items-center gap-1.5"><i data-lucide="clock-3" width="15" height="15"></i><span data-template-id="quiz-bootstrap-duration" class="canva-text"></span></span>
+        </div><button type="button" data-quiz="Bootstrap 5" data-template-id="quiz-bootstrap-button" class="canva-button start-button mt-5 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-white"></button>
+       </article>
+       <article data-template-id="quiz-general-card" class="canva-card surface quiz-card p-5" data-search="general knowledge world history science culture">
+        <div class="flex items-start justify-between">
+         <div class="soft-icon bg-teal-50 text-teal-600">
+          <i data-lucide="lightbulb" width="21" height="21"></i>
+         </div><span data-template-id="quiz-general-difficulty" class="canva-tag rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600"></span>
+        </div>
+        <h3 data-template-id="quiz-general-title" class="canva-text mt-5 font-bold text-slate-900"></h3>
+        <p data-template-id="quiz-general-description" class="canva-text mt-2 text-sm leading-relaxed text-slate-500"></p>
+        <div class="flex items-center gap-4 mt-5 text-xs text-slate-500"><span class="flex items-center gap-1.5"><i data-lucide="list-checks" width="15" height="15"></i><span data-template-id="quiz-general-questions" class="canva-text"></span></span> <span class="flex items-center gap-1.5"><i data-lucide="clock-3" width="15" height="15"></i><span data-template-id="quiz-general-duration" class="canva-text"></span></span>
+        </div><button type="button" data-quiz="General Knowledge" data-template-id="quiz-general-button" class="canva-button start-button mt-5 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-white"></button>
+       </article>
+      </div>
+      <p id="noSearchResult" class="hidden text-center text-sm text-slate-500 py-8">No quizzes match your search.</p>
+     </section>
+     <!-- up to this section  -->
+     <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-7">
+      <article data-template-id="performance-card" class="canva-card surface xl:col-span-2 p-5 sm:p-6">
+       <div class="flex justify-between items-start gap-4">
+        <div>
+         <p data-template-id="performance-kicker" class="canva-text text-xs font-bold uppercase tracking-[.15em] text-blue-600"></p>
+         <h2 data-template-id="performance-title" class="canva-text mt-1 font-bold text-slate-900"></h2>
+        </div><span data-template-id="performance-period" class="canva-tag rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-500"></span>
+       </div>
+       <div class="chart-grid mt-6 h-52 flex items-end justify-around gap-3 px-2 pt-5 border-b border-slate-200">
+        <div class="h-full flex flex-col justify-end items-center gap-2">
+         <span class="text-xs font-bold text-slate-500">72</span>
+         <div class="chart-bar" style="height:72%"></div><span class="text-xs text-slate-400">Mon</span>
+        </div>
+        <div class="h-full flex flex-col justify-end items-center gap-2">
+         <span class="text-xs font-bold text-slate-500">80</span>
+         <div class="chart-bar" style="height:80%"></div><span class="text-xs text-slate-400">Tue</span>
+        </div>
+        <div class="h-full flex flex-col justify-end items-center gap-2">
+         <span class="text-xs font-bold text-slate-500">75</span>
+         <div class="chart-bar" style="height:75%"></div><span class="text-xs text-slate-400">Wed</span>
+        </div>
+        <div class="h-full flex flex-col justify-end items-center gap-2">
+         <span class="text-xs font-bold text-slate-500">90</span>
+         <div class="chart-bar" style="height:90%"></div><span class="text-xs text-slate-400">Thu</span>
+        </div>
+        <div class="h-full flex flex-col justify-end items-center gap-2">
+         <span class="text-xs font-bold text-slate-500">85</span>
+         <div class="chart-bar" style="height:85%"></div><span class="text-xs text-slate-400">Fri</span>
+        </div>
+        <div class="h-full flex flex-col justify-end items-center gap-2">
+         <span class="text-xs font-bold text-slate-500">95</span>
+         <div class="chart-bar bg-gradient-to-t from-teal-500 to-cyan-300" style="height:95%"></div><span class="text-xs text-slate-400">Sat</span>
+        </div>
+       </div>
+      </article>
+      <aside data-template-id="score-summary-card" class="canva-panel surface p-6 flex flex-col justify-between">
+       <div>
+        <div class="soft-icon bg-teal-50 text-teal-600">
+         <i data-lucide="sparkles" width="21" height="21"></i>
+        </div>
+        <p data-template-id="score-summary-label" class="canva-text mt-5 text-sm font-semibold text-slate-500"></p>
+        <p data-template-id="score-summary-number" class="canva-text mt-1 text-5xl font-bold text-slate-900"></p>
+        <p data-template-id="score-summary-copy" class="canva-text mt-3 text-sm leading-relaxed text-slate-500"></p>
+       </div>
+       <div class="mt-6 rounded-xl bg-teal-50 p-4 text-teal-800">
+        <p data-template-id="score-tip-title" class="canva-text font-bold text-sm"></p>
+        <p data-template-id="score-tip-copy" class="canva-text mt-1 text-xs leading-relaxed"></p>
+       </div>
+      </aside>
+     </section>
+     <section id="results" class="mt-7 pb-6">
+      <div class="flex items-end justify-between gap-4 mb-4">
+       <div>
+        <p data-template-id="results-kicker" class="canva-text text-xs font-bold uppercase tracking-[.15em] text-blue-600"></p>
+        <h2 data-template-id="results-title" class="canva-text mt-1 font-bold text-slate-900"></h2>
+       </div><a href="history.html" data-template-id="view-history-link" class="canva-link text-sm font-bold text-blue-600 hover:text-blue-700"></a>
+      </div>
+      <div class="surface table-wrap">
+       <table class="w-full text-left border-collapse">
+        <thead class="bg-slate-50 border-b border-slate-200">
+         <tr>
+          <th data-template-id="table-quiz-header" class="canva-text px-5 py-4 text-xs uppercase tracking-wider text-slate-500"></th>
+          <th data-template-id="table-date-header" class="canva-text px-5 py-4 text-xs uppercase tracking-wider text-slate-500"></th>
+          <th data-template-id="table-score-header" class="canva-text px-5 py-4 text-xs uppercase tracking-wider text-slate-500"></th>
+          <th data-template-id="table-correct-header" class="canva-text px-5 py-4 text-xs uppercase tracking-wider text-slate-500"></th>
+          <th data-template-id="table-status-header" class="canva-text px-5 py-4 text-xs uppercase tracking-wider text-slate-500"></th>
+         </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-sm">
+         <tr>
+          <td data-template-id="result-1-quiz" class="canva-text px-5 py-4 font-semibold text-slate-800"></td>
+          <td data-template-id="result-1-date" class="canva-text px-5 py-4 text-slate-500"></td>
+          <td data-template-id="result-1-score" class="canva-text px-5 py-4 font-bold text-slate-800"></td>
+          <td data-template-id="result-1-correct" class="canva-text px-5 py-4 text-slate-500"></td>
+          <td class="px-5 py-4"><span data-template-id="result-1-status" class="canva-tag inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-600"></span></td>
+         </tr>
+         <tr>
+          <td data-template-id="result-2-quiz" class="canva-text px-5 py-4 font-semibold text-slate-800"></td>
+          <td data-template-id="result-2-date" class="canva-text px-5 py-4 text-slate-500"></td>
+          <td data-template-id="result-2-score" class="canva-text px-5 py-4 font-bold text-slate-800"></td>
+          <td data-template-id="result-2-correct" class="canva-text px-5 py-4 text-slate-500"></td>
+          <td class="px-5 py-4"><span data-template-id="result-2-status" class="canva-tag inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-600"></span></td>
+         </tr>
+         <tr>
+          <td data-template-id="result-3-quiz" class="canva-text px-5 py-4 font-semibold text-slate-800"></td>
+          <td data-template-id="result-3-date" class="canva-text px-5 py-4 text-slate-500"></td>
+          <td data-template-id="result-3-score" class="canva-text px-5 py-4 font-bold text-slate-800"></td>
+          <td data-template-id="result-3-correct" class="canva-text px-5 py-4 text-slate-500"></td>
+          <td class="px-5 py-4"><span data-template-id="result-3-status" class="canva-tag inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-600"></span></td>
+         </tr>
+         <tr>
+          <td data-template-id="result-4-quiz" class="canva-text px-5 py-4 font-semibold text-slate-800"></td>
+          <td data-template-id="result-4-date" class="canva-text px-5 py-4 text-slate-500"></td>
+          <td data-template-id="result-4-score" class="canva-text px-5 py-4 font-bold text-slate-800"></td>
+          <td data-template-id="result-4-correct" class="canva-text px-5 py-4 text-slate-500"></td>
+          <td class="px-5 py-4"><span data-template-id="result-4-status" class="canva-tag inline-flex rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-600"></span></td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </section>
+    </main>
+   </div>
+  </div>
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+      const templateContent = {
+        "brand-name": "QuizMaster",
+        "nav-dashboard": "Dashboard", "nav-quizzes": "Quizzes", "nav-results": "Results", "nav-history": "History", "nav-profile": "Profile", "nav-settings": "Settings", "nav-logout": "Log out",
+        "breadcrumb-label": "Student portal", "page-title": "Dashboard", "user-name": "Student",
+        "notification-title": "You are all caught up", "notification-copy": "Your next quiz is ready whenever you are.", "profile-menu-item": "View profile", "settings-menu-item": "Account settings",
+        "welcome-kicker": "Keep learning", "welcome-heading": "Welcome back, Student!", "welcome-subtitle": "Track your progress, pick a quiz, and build your skills one question at a time.",
+        "stat-total-trend": "+2 this week", "stat-total-number": "12", "stat-total-label": "Quizzes available",
+        "stat-completed-trend": "+1 this week", "stat-completed-number": "8", "stat-completed-label": "Quizzes completed",
+        "stat-average-trend": "+4%", "stat-average-number": "84%", "stat-average-label": "Average score", "stat-best-trend": "Personal best", "stat-best-number": "95%", "stat-best-label": "Highest score",
+        "quiz-section-kicker": "Continue learning", "quiz-section-title": "Available quizzes", "quiz-count-label": "4 quizzes",
+        "quiz-js-difficulty": "Beginner", "quiz-js-title": "JavaScript Fundamentals", "quiz-js-description": "Practice variables, functions, and core JavaScript concepts.", "quiz-js-questions": "10 questions", "quiz-js-duration": "10 min", "quiz-js-button": "Start quiz",
+        "quiz-html-difficulty": "Beginner", "quiz-html-title": "HTML & CSS", "quiz-html-description": "Test your knowledge of semantic HTML, CSS, and responsive layouts.", "quiz-html-questions": "12 questions", "quiz-html-duration": "12 min", "quiz-html-button": "Start quiz",
+        "quiz-bootstrap-difficulty": "Intermediate", "quiz-bootstrap-title": "Bootstrap 5", "quiz-bootstrap-description": "Explore grids, components, and Bootstrap utility classes.", "quiz-bootstrap-questions": "15 questions", "quiz-bootstrap-duration": "15 min", "quiz-bootstrap-button": "Start quiz",
+        "quiz-general-difficulty": "Intermediate", "quiz-general-title": "General Knowledge", "quiz-general-description": "Challenge yourself with questions from science, history, and culture.", "quiz-general-questions": "10 questions", "quiz-general-duration": "10 min", "quiz-general-button": "Start quiz",
+        "performance-kicker": "Your progress", "performance-title": "Weekly performance", "performance-period": "This week",
+        "score-summary-label": "Average score", "score-summary-number": "84%", "score-summary-copy": "You are improving steadily. Keep practising to reach your next goal.", "score-tip-title": "Study tip", "score-tip-copy": "Review incorrect answers before starting your next quiz.",
+        "results-kicker": "Recent activity", "results-title": "Latest results", "view-history-link": "View all history", "table-quiz-header": "Quiz", "table-date-header": "Date", "table-score-header": "Score", "table-correct-header": "Correct", "table-status-header": "Status",
+        "result-1-quiz": "JavaScript Fundamentals", "result-1-date": "Sep 10, 2026", "result-1-score": "90%", "result-1-correct": "9 / 10", "result-1-status": "Completed",
+        "result-2-quiz": "HTML & CSS", "result-2-date": "Sep 8, 2026", "result-2-score": "85%", "result-2-correct": "10 / 12", "result-2-status": "Completed",
+        "result-3-quiz": "Bootstrap 5", "result-3-date": "Sep 5, 2026", "result-3-score": "80%", "result-3-correct": "12 / 15", "result-3-status": "Completed",
+        "result-4-quiz": "General Knowledge", "result-4-date": "Sep 2, 2026", "result-4-score": "In progress", "result-4-correct": "--", "result-4-status": "Pending"
+      };
+      Object.entries(templateContent).forEach(function ([id, text]) {
+        const element = document.querySelector('[data-template-id="' + id + '"]');
+        if (element) element.textContent = text;
+      });
+      if (window.lucide) lucide.createIcons(); 
+       const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebarOverlay");
+      const openSidebar = document.getElementById("openSidebar");
+      const closeSidebar = document.getElementById("closeSidebar");
+      const notificationButton = document.getElementById("notificationButton");
+      const notificationPanel = document.getElementById("notificationPanel");
+      const profileButton = document.getElementById("profileButton");
+      const profilePanel = document.getElementById("profilePanel");
+      const actionMessage = document.getElementById("actionMessage");
+    openSidebar.addEventListener("click" , function(){
+      sidebar.classList.add("is-open");
+      overlay.classList.add("is-open");
+    })
+    closeSidebar.addEventListener("click" , function(){
+      sidebar.classList.remove("is-open");
+      overlay.classList.remove("is-open");
+    });
+    overlay.addEventListener("click" , function(){
+      sidebar.classList.remove("is-open")
+      overlay.classList.remove("is-open")
+    });
+     notificationButton.addEventListener("click" , function(){
+      notificationPanel.classList.toggle("show");
+      profilePanel.classList.remove("show");
+     });
+     profileButton.addEventListener("click", function(){
+       profilePanel.classList.toggle("show");
+       notificationButton.classList.remove("show");
+     });
+     document.addEventListener("click", function(event){
+      if(
+        !event.target.closest("#notificationButton") && 
+        !event.target.closest("#notificationPanel") &&
+        !event.target.closest("#profileButton") &&
+        !event.target.closest("#profilePanel")
+        ){
+        notificationPanel.classList.remove("show");
+        profilePanel.classList.remove("show");
+      }
+
+     });
+     document.addEventListener("keydown", function(event){
+      if(event.key === "Escape"){
+        sidebar.classList.remove("is-open");
+        overlay.classList.remove("is-open");
+        notificationPanel.classList.remove("show");
+        profilePanel.classList.remove("remove");
+      }
+     });
+
+    const quizPages = {
+      "JavaScript Fundamentals": "quizmaster.html",
+      "HTML & CSS": "htmlcss.html",
+      "Bootstrap 5": "bootsrap.html",
+      "General Knowledge": "generalknowledge.html"
+    };
+    document.querySelectorAll(".start-button[data-quiz]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const quizPage = quizPages[button.dataset.quiz];
+        if (quizPage) window.location.href = quizPage;
+      });
+    });
+    // SEARCH QUIZZES
+    const searchInput = document.getElementById("quizSearch");
+    const cards = document.querySelectorAll("#quizGrid article");
+    const noSearchResult = document.getElementById("noSearchResult");
+    searchInput.addEventListener("input" , function(){
+    const searchText = searchInput.value.toLowerCase();
+    let found = false;
+    for (let i = 0; i < cards.length; i++){
+
+    
+    const cardText = cards[i].getAttribute("data-search");
+    if(cardText.includes(searchText)){
+      
+      cards[i].classList.remove("hidden");
+     found = true;
+    }else{
+      cards[i].classList.add("hidden")
+    };
+    if(found){
+      noSearchResult.classList.add("hidden")
+    }else{
+      noSearchResult.classList.remove("hidden")
+    }
+    }
+   });
+
+    });
+
+
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

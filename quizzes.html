@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMaster Student Dashboard</title>
+      <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quizzes.css">
+</head>
+<body>
+<div class="dashboard-shell">
+<div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+  <aside id="sidebar" class="sidebar" aria-label="Primary navigation">
+    <div class="flex items-center justify-between px-2 mb-9">
+     <div class="flex items-center gap-3">
+      <div class="brand-mark"><i data-lucide="graduation-cap" width="21" height="21"></i>
+      </div><span data-template-id="brand-name" class="canva-text text-white font-bold tracking-tight"></span>
+     </div><button id="closeSidebar" type="button" class="lg:hidden text-slate-400 hover:text-white" aria-label="Close navigation"> <i data-lucide="x" width="21" height="21"></i> </button>
+    </div>
+    <nav class="flex-1" aria-label="QuizMaster navigation">
+     <a href="index.html" class="nav-link"><i data-lucide="layout-dashboard" width="19" height="19"></i><span data-template-id="nav-dashboard" class="canva-text"></span></a> <a href="quizzes.html" class="nav-link active" aria-current="page"><i data-lucide="book-open" width="19" height="19"></i><span data-template-id="nav-quizzes" class="canva-text"></span></a> <a href="result.html" class="nav-link"><i data-lucide="chart-no-axes-combined" width="19" height="19"></i><span data-template-id="nav-results" class="canva-text"></span></a> <a href="history.html" class="nav-link"><i data-lucide="history" width="19" height="19"></i><span data-template-id="nav-history" class="canva-text"></span></a>
+     <div class="mt-7 mb-3 px-3 text-[11px] font-bold uppercase tracking-[.16em] text-slate-500">
+      Account
+     </div><a href="#profile" class="nav-link"><i data-lucide="circle-user-round" width="19" height="19"></i><span data-template-id="nav-profile" class="canva-text"></span></a> <a href="#settings" class="nav-link"><i data-lucide="settings-2" width="19" height="19"></i><span data-template-id="nav-settings" class="canva-text"></span></a>
+    </nav><button type="button" class="nav-link w-full text-left mt-3"><i data-lucide="log-out" width="19" height="19"></i><span data-template-id="nav-logout" class="canva-text"></span></button>
+   </aside>
+   <div class="main-area">
+     <header class="topbar px-4 sm:px-7">
+     <div class="h-[76px] flex items-center justify-between gap-3 max-w-[1500px] mx-auto">
+      <div class="flex items-center gap-3">
+       <button id="openSidebar" type="button" class="lg:hidden w-10 h-10 rounded-xl bg-white border border-slate-200 grid place-items-center" aria-label="Open navigation"> <i data-lucide="menu" width="20" height="20"></i> </button>
+       <div>
+        <p data-template-id="breadcrumb-label" class="canva-text text-xs font-semibold uppercase tracking-[.15em] text-slate-400 hidden sm:block"></p>
+        <h1 data-template-id="page-title" class="canva-text font-bold text-slate-900"></h1>
+       </div>
+      </div>
+      <div class="flex items-center gap-2 sm:gap-3">
+       <div class="search-wrap relative">
+        <label for="globalSearch" class="sr-only">Search quizzes</label> <i data-lucide="search" width="17" height="17" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i> <input id="globalSearch" type="search" placeholder="Search quizzes..." class="w-52 xl:w-64 rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-400">
+       </div>
+       <div class="relative">
+        <button id="notificationButton" type="button" class="relative w-10 h-10 grid place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-blue-600" aria-label="Show notifications" aria-expanded="false"> <i data-lucide="bell" width="19" height="19"></i> <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-teal-500 border border-white"></span> </button>
+        <div id="notificationPanel" class="pop-panel surface p-4" role="status">
+         <p data-template-id="notification-title" class="canva-text font-bold text-slate-800"></p>
+         <p data-template-id="notification-copy" class="canva-text mt-1 text-sm text-slate-500"></p>
+        </div>
+       </div>
+       <div class="relative">
+        <button id="profileButton" type="button" class="flex items-center gap-2 rounded-xl p-1.5 hover:bg-slate-100" aria-label="Open profile menu" aria-expanded="false">
+         <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 text-white grid place-items-center font-bold text-sm">
+          S
+         </div><span data-template-id="user-name" class="canva-text user-name font-semibold text-sm text-slate-700"></span> <i data-lucide="chevron-down" width="16" height="16" class="text-slate-400"></i> </button>
+        <div id="profilePanel" class="pop-panel surface overflow-hidden">
+         <a href="#profile" data-template-id="profile-menu-item" class="canva-link block px-4 py-3 text-sm hover:bg-slate-50"></a> <a href="#settings" data-template-id="settings-menu-item" class="canva-link block px-4 py-3 border-t border-slate-100 text-sm hover:bg-slate-50"></a>
+        </div>
+       </div>
+      </div>
+     </div>
+    </header>
+    <main id="dashboard" class="quizzes-page max-w-[1500px] mx-auto p-4 sm:p-7">
+    <section class="welcome-card page-enter p-6 sm:p-8 lg:p-9 mb-6">
+    <div  class="relative z-10 flex items-center justify-between gap-5">
+     <div class="welcome-copy">
+        <p data-template-id="welcome-kicker" class="canva-text text-teal-200 font-semibold text-sm mb-2"></p>
+        <h2 data-template-id="welcome-heading" class="canva-text display-serif text-3xl sm:text-4xl leading-tight"></h2>
+        <p data-template-id="welcome-subtitle" class="canva-text mt-3 max-w-xl text-blue-100 leading-relaxed"></p>
+       </div>
+      <div class="hidden sm:grid shrink-0 w-28 h-28 lg:w-36 lg:h-36 place-items-center rounded-[30px] bg-white/10 border border-white/15 rotate-3">
+        <i data-lucide="notebook-tabs" width="60" height="60" class="text-teal-200 -rotate-3"></i>
+       </div>
+
+    </div>
+
+    </section>
+     <p id="actionMessage" class="hidden mb-5 rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 text-sm font-medium text-teal-800" role="status"></p>
+      <section id="quizzes" class="page-enter delay-two">
+      <div class="quiz-filters surface p-4 sm:p-5 mb-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+       <div>
+        <label for="quizSearch" class="sr-only">Search quizzes</label><input id="quizSearch" type="search" placeholder="Search quizzes..." class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-blue-400">
+       </div>
+       <div>
+        <label for="categoryFilter" class="sr-only">Category</label>
+        <select id="categoryFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-blue-400"><option value="">All categories</option><option>Programming</option><option>Web Development</option><option>General Knowledge</option><option>Computer Science</option></select>
+       </div>
+       <div>
+        <label for="difficultyFilter" class="sr-only">Difficulty</label><select id="difficultyFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-blue-400"><option value="">All difficulty levels</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+       </div>
+       <div>
+        <label for="sortFilter" class="sr-only">Sort quizzes</label><select id="sortFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-blue-400"><option value="default">Sort: Recommended</option><option value="title">Sort: Title A–Z</option><option value="duration">Sort: Shortest first</option></select>
+       </div>
+      </div>
+      <div class="flex items-end justify-between gap-4 mb-4">
+       <div>
+        <p data-template-id="quiz-section-kicker" class="canva-text text-xs font-bold uppercase tracking-[.15em] text-blue-600"></p>
+        <h2 data-template-id="quiz-section-title" class="canva-text mt-1 font-bold text-slate-900"></h2>
+       </div><span data-template-id="quiz-count-label" class="canva-text text-sm text-slate-500"></span>
+      </div>
+      <div id="quizGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+       <article data-template-id="quiz-js-card" class="canva-card surface quiz-card p-5" data-search="javascript fundamentals programming learn variables functions and basic concepts beginner">
+        <div class="flex items-start justify-between">
+         <div class="soft-icon bg-amber-50 text-amber-500"><i data-lucide="braces" width="21" height="21"></i>
+         </div><span data-template-id="quiz-js-difficulty" class="canva-tag rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-600"></span>
+        </div>
+        <h3 data-template-id="quiz-js-title" class="canva-text mt-5 font-bold text-slate-900"></h3>
+        <p data-template-id="quiz-js-description" class="canva-text mt-2 text-sm leading-relaxed text-slate-500"></p>
+        <div class="flex items-center gap-4 mt-5 text-xs text-slate-500">
+         <span class="flex items-center gap-1.5"><i data-lucide="list-checks" width="15" height="15"></i><span data-template-id="quiz-js-questions" class="canva-text"></span></span> <span class="flex items-center gap-1.5"><i data-lucide="clock-3" width="15" height="15"></i><span data-template-id="quiz-js-duration" class="canva-text"></span></span>
+        </div><button type="button" data-quiz="JavaScript Fundamentals"  class="canva-button start-button mt-5 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-white"> <a href="quizmaster.html">Start quize</a></button>
+       </article>
+       <article data-template-id="quiz-html-card" class="canva-card surface quiz-card p-5" data-search="html css fundamentals web development semantics selectors responsive layouts easy beginner">
+        <div class="flex items-start justify-between">
+         <div class="soft-icon bg-orange-50 text-orange-500"><i data-lucide="code-2" width="21" height="21"></i>
+         </div><span data-template-id="quiz-html-difficulty" class="canva-tag rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-600"></span>
+        </div>
+        <h3 data-template-id="quiz-html-title" class="canva-text mt-5 font-bold text-slate-900"></h3>
+        <p data-template-id="quiz-html-description" class="canva-text mt-2 text-sm leading-relaxed text-slate-500"></p>
+        <div class="flex items-center gap-4 mt-5 text-xs text-slate-500">
+         <span class="flex items-center gap-1.5"><i data-lucide="list-checks" width="15" height="15"></i><span data-template-id="quiz-html-questions" class="canva-text"></span></span> <span class="flex items-center gap-1.5"><i data-lucide="clock-3" width="15" height="15"></i><span data-template-id="quiz-html-duration" class="canva-text"></span></span>
+        </div><button type="button" data-quiz="HTML &amp; CSS"  class="canva-button start-button mt-5 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-white"> <a href="htmlcss.html">start quiz</a></button>
+       </article>
+       <article data-template-id="quiz-bootstrap-card" class="canva-card surface quiz-card p-5" data-search="bootstrap 5 web development grids components utility classes intermediate">
+        <div class="flex items-start justify-between">
+         <div class="soft-icon bg-violet-50 text-violet-600"><i data-lucide="blocks" width="21" height="21"></i>
+         </div><span data-template-id="quiz-bootstrap-difficulty" class="canva-tag rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-600"></span>
+        </div>
+        <h3 data-template-id="quiz-bootstrap-title" class="canva-text mt-5 font-bold text-slate-900"></h3>
+        <p data-template-id="quiz-bootstrap-description" class="canva-text mt-2 text-sm leading-relaxed text-slate-500"></p>
+        <div class="flex items-center gap-4 mt-5 text-xs text-slate-500">
+         <span class="flex items-center gap-1.5"><i data-lucide="list-checks" width="15" height="15"></i><span data-template-id="quiz-bootstrap-questions" class="canva-text"></span></span> <span class="flex items-center gap-1.5"><i data-lucide="clock-3" width="15" height="15"></i><span data-template-id="quiz-bootstrap-duration" class="canva-text"></span></span>
+        </div><button type="button" data-quiz="Bootstrap 5"  class="canva-button start-button mt-5 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-white"> <a href="bootsrap.html">Start quiz</a></button>
+       </article>
+       <article data-template-id="quiz-general-card" class="canva-card surface quiz-card p-5" data-search="general knowledge world history science culture general knowledge intermediate">
+        <div class="flex items-start justify-between">
+         <div class="soft-icon bg-teal-50 text-teal-600"><i data-lucide="lightbulb" width="21" height="21"></i>
+         </div><span data-template-id="quiz-general-difficulty" class="canva-tag rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600"></span>
+        </div>
+        <h3 data-template-id="quiz-general-title" class="canva-text mt-5 font-bold text-slate-900"></h3>
+        <p data-template-id="quiz-general-description" class="canva-text mt-2 text-sm leading-relaxed text-slate-500"></p>
+        <div class="flex items-center gap-4 mt-5 text-xs text-slate-500">
+         <span class="flex items-center gap-1.5"><i data-lucide="list-checks" width="15" height="15"></i><span data-template-id="quiz-general-questions" class="canva-text"></span></span> <span class="flex items-center gap-1.5"><i data-lucide="clock-3" width="15" height="15"></i><span data-template-id="quiz-general-duration" class="canva-text"></span></span>
+        </div><button type="button" data-quiz="General Knowledge"  class="canva-button start-button mt-5 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-white"><a href="generalknowledge.html">Start quiz</a></button>
+       </article>
+       <article data-template-id="quiz-functions-card" class="canva-card surface quiz-card p-5" data-search="javascript functions programming advanced">
+        <div class="flex items-start justify-between">
+         <div class="soft-icon bg-blue-50 text-blue-600">
+          <i data-lucide="function-square" width="21" height="21"></i>
+         </div><span data-template-id="quiz-functions-difficulty" class="canva-tag rounded-full bg-violet-50 px-2.5 py-1 text-xs font-bold text-violet-600"></span>
+        </div><span data-template-id="quiz-functions-category" class="canva-text quiz-category mt-5 block"></span>
+        <h3 data-template-id="quiz-functions-title" class="canva-text mt-1 font-bold text-slate-900"></h3>
+        <p data-template-id="quiz-functions-description" class="canva-text mt-2 text-sm leading-relaxed text-slate-500"></p>
+        <div class="quiz-meta flex items-center gap-4 mt-5">
+         <span data-template-id="quiz-functions-questions" class="canva-text"></span><span data-template-id="quiz-functions-duration" class="canva-text"></span>
+        </div><button type="button" data-quiz="JavaScript Functions"  class="canva-button start-button mt-5 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-white"> <a href="jsfunction.html">Start quiz</a></button>
+       </article>
+       <article data-template-id="quiz-web-card" class="canva-card surface quiz-card p-5" data-search="web development basics web development beginner">
+        <div class="flex items-start justify-between">
+         <div class="soft-icon bg-teal-50 text-teal-600">
+          <i data-lucide="globe-2" width="21" height="21"></i>
+         </div><span data-template-id="quiz-web-difficulty" class="canva-tag rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-600"></span>
+        </div><span data-template-id="quiz-web-category" class="canva-text quiz-category mt-5 block"></span>
+        <h3 data-template-id="quiz-web-title" class="canva-text mt-1 font-bold text-slate-900"></h3>
+        <p data-template-id="quiz-web-description" class="canva-text mt-2 text-sm leading-relaxed text-slate-500"></p>
+        <div class="quiz-meta flex items-center gap-4 mt-5">
+         <span data-template-id="quiz-web-questions" class="canva-text"></span><span data-template-id="quiz-web-duration" class="canva-text"></span>
+        </div><button type="button" data-quiz="Web Development Basics"  class="canva-button start-button mt-5 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-white"> <a href="webdev.html">Start quiz</a></button>
+       </article>
+       <article data-template-id="quiz-computer-card" class="canva-card surface quiz-card p-5" data-search="computer fundamentals computer science intermediate">
+        <div class="flex items-start justify-between">
+         <div class="soft-icon bg-violet-50 text-violet-600">
+          <i data-lucide="cpu" width="21" height="21"></i>
+         </div><span data-template-id="quiz-computer-difficulty" class="canva-tag rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-600"></span>
+        </div><span data-template-id="quiz-computer-category" class="canva-text quiz-category mt-5 block"></span>
+        <h3 data-template-id="quiz-computer-title" class="canva-text mt-1 font-bold text-slate-900"></h3>
+        <p data-template-id="quiz-computer-description" class="canva-text mt-2 text-sm leading-relaxed text-slate-500"></p>
+        <div class="quiz-meta flex items-center gap-4 mt-5">
+         <span data-template-id="quiz-computer-questions" class="canva-text"></span><span data-template-id="quiz-computer-duration" class="canva-text"></span>
+        </div><button type="button" data-quiz="Computer Fundamentals"  class="canva-button start-button mt-5 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-white"> <a href="cfc.html">Start quiz</a></button>
+       </article>
+      </div>
+      <p id="noSearchResult" class="hidden text-center text-sm text-slate-500 py-8">No quizzes match your search.</p>
+     </section>
+   </div>
+
+</div>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const templateContent = {
+        "brand-name": "QuizMaster",
+        "nav-dashboard": "Dashboard", "nav-quizzes": "Quizzes", "nav-results": "Results", "nav-history": "History", "nav-profile": "Profile", "nav-settings": "Settings", "nav-logout": "Log out",
+        "breadcrumb-label": "Student portal", "page-title": "Quizzes", "user-name": "Student",
+        "notification-title": "You are all caught up", "notification-copy": "Your next quiz is ready whenever you are.", "profile-menu-item": "View profile", "settings-menu-item": "Account settings",
+        "welcome-kicker": "Choose your challenge", "welcome-heading": "Find your next quiz", "welcome-subtitle": "Search, filter, and start a quiz that matches what you want to learn today.",
+        "quiz-section-kicker": "Quiz library", "quiz-section-title": "Browse quizzes", "quiz-count-label": "7 quizzes",
+        "quiz-js-difficulty": "Beginner", "quiz-js-title": "JavaScript Fundamentals", "quiz-js-description": "Practice variables, functions, and core JavaScript concepts.", "quiz-js-questions": "10 questions", "quiz-js-duration": "10 min", "quiz-js-button": "Start quiz",
+        "quiz-html-difficulty": "Beginner", "quiz-html-title": "HTML & CSS", "quiz-html-description": "Test semantic HTML, CSS selectors, and responsive layouts.", "quiz-html-questions": "12 questions", "quiz-html-duration": "12 min", "quiz-html-button": "Start quiz",
+        "quiz-bootstrap-difficulty": "Intermediate", "quiz-bootstrap-title": "Bootstrap 5", "quiz-bootstrap-description": "Explore grids, components, and Bootstrap utility classes.", "quiz-bootstrap-questions": "15 questions", "quiz-bootstrap-duration": "15 min", "quiz-bootstrap-button": "Start quiz",
+        "quiz-general-difficulty": "Intermediate", "quiz-general-title": "General Knowledge", "quiz-general-description": "Challenge yourself with science, history, and culture questions.", "quiz-general-questions": "10 questions", "quiz-general-duration": "10 min", "quiz-general-button": "Start quiz",
+        "quiz-functions-difficulty": "Advanced", "quiz-functions-category": "Programming", "quiz-functions-title": "JavaScript Functions", "quiz-functions-description": "Test your understanding of parameters, scope, and return values.", "quiz-functions-questions": "14 questions", "quiz-functions-duration": "15 min", "quiz-functions-button": "Start quiz",
+        "quiz-web-difficulty": "Beginner", "quiz-web-category": "Web Development", "quiz-web-title": "Web Development Basics", "quiz-web-description": "Learn the building blocks of websites and how the web works.", "quiz-web-questions": "10 questions", "quiz-web-duration": "10 min", "quiz-web-button": "Start quiz",
+        "quiz-computer-difficulty": "Intermediate", "quiz-computer-category": "Computer Science", "quiz-computer-title": "Computer Fundamentals", "quiz-computer-description": "Review hardware, software, operating systems, and networking basics.", "quiz-computer-questions": "12 questions", "quiz-computer-duration": "12 min", "quiz-computer-button": "Start quiz"
+      };
+      Object.entries(templateContent).forEach(function ([id, text]) {
+        const element = document.querySelector('[data-template-id="' + id + '"]');
+        if (element) element.textContent = text;
+      });
+
+      if (window.lucide){
+        lucide.createIcons();
+      }
+       const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebarOverlay");
+      const openSidebar = document.getElementById("openSidebar");
+      const closeSidebar = document.getElementById("closeSidebar");
+      const notificationButton = document.getElementById("notificationButton");
+      const notificationPanel = document.getElementById("notificationPanel");
+      const profileButton = document.getElementById("profileButton");
+      const profilePanel = document.getElementById("profilePanel");
+      const actionMessage = document.getElementById("actionMessage");
+    openSidebar.addEventListener("click" , function(){
+      sidebar.classList.add("is-open");
+      overlay.classList.add("is-open");
+    })
+    closeSidebar.addEventListener("click" , function(){
+      sidebar.classList.remove("is-open");
+      overlay.classList.remove("is-open");
+    });
+    overlay.addEventListener("click" , function(){
+      sidebar.classList.remove("is-open")
+      overlay.classList.remove("is-open")
+    });
+     notificationButton.addEventListener("click" , function(){
+      notificationPanel.classList.toggle("show");
+      profilePanel.classList.remove("show");
+     });
+     profileButton.addEventListener("click", function(){
+       profilePanel.classList.toggle("show");
+       notificationButton.classList.remove("show");
+     });
+     document.addEventListener("click", function(event){
+      if(
+        !event.target.closest("#notificationButton") && 
+        !event.target.closest("#notificationPanel") &&
+        !event.target.closest("#profileButton") &&
+        !event.target.closest("#profilePanel")
+        ){
+        notificationPanel.classList.remove("show");
+        profilePanel.classList.remove("show");
+      }
+
+     });
+     document.addEventListener("keydown", function(event){
+      if(event.key === "Escape"){
+        sidebar.classList.remove("is-open");
+        overlay.classList.remove("is-open");
+        notificationPanel.classList.remove("show");
+        profilePanel.classList.remove("remove");
+      }
+     });
+      // SEARCH QUIZZES
+    const searchInput = document.getElementById("quizSearch");
+    const cards = document.querySelectorAll("#quizGrid article");
+    const noSearchResult = document.getElementById("noSearchResult");
+    searchInput.addEventListener("input" , function(){
+    const searchText = searchInput.value.toLowerCase();
+    let found = false;
+    for (let i = 0; i < cards.length; i++){
+
+    
+    const cardText = cards[i].getAttribute("data-search");
+    if(cardText.includes(searchText)){
+      
+      cards[i].classList.remove("hidden");
+     found = true;
+    }else{
+      cards[i].classList.add("hidden")
+    };
+    if(found){
+      noSearchResult.classList.add("hidden")
+    }else{
+      noSearchResult.classList.remove("hidden")
+    }
+    }
+   });
+
+    });
+  
+  </script>
+
+</body>
+</html>
